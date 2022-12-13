@@ -35,9 +35,3 @@ resource "aws_acm_certificate" "ipfs" {
     create_before_destroy = true
   }
 }
-
-resource "aws_acm_certificate_validation" "default" {
-  provider                = aws
-  certificate_arn         = aws_acm_certificate.ipfs.arn
-  validation_record_fqdns = [ for record in aws_route53_record.validation : record.fqdn ]
-}
