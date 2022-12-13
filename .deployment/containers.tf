@@ -80,7 +80,7 @@ resource "aws_ecs_service" "ipfs" {
   load_balancer {
     target_group_arn = aws_lb_target_group.ipfs.arn
     container_name   = "${var.project_name}-ipfs-${var.environment}"
-    container_port   = 5001
+    container_port   = 3000
   }
 
   network_configuration {
@@ -178,7 +178,7 @@ resource "aws_ecs_task_definition" "ipfs" {
   container_definitions = jsonencode([
     {
       name              = "${var.project_name}-ipfs-${var.environment}"
-      image             = "ipfs/go-ipfs"
+      image             = "rebelthor/sleep"
       cpu               = var.task_definition_configs.ipfs.cpu
       memory            = var.task_definition_configs.ipfs.memory
       memoryReservation = var.task_definition_configs.ipfs.soft_memory_limit
@@ -186,7 +186,7 @@ resource "aws_ecs_task_definition" "ipfs" {
       portMappings      = [
         {
           containerPort = 5001
-          hostPort      = 5001
+          hostPort      = 3000
         }
       ]
       logConfiguration  = {

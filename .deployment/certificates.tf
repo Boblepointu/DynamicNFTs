@@ -2,10 +2,16 @@
 #### Certificate validation ###
 ###############################
 
-resource "aws_acm_certificate_validation" "default" {
+resource "aws_acm_certificate_validation" "frontend" {
   provider                = aws
   certificate_arn         = aws_acm_certificate.frontend.arn
-  validation_record_fqdns = [ for record in aws_route53_record.validation : record.fqdn ]
+  validation_record_fqdns = [ for record in aws_route53_record.validation_frontend : record.fqdn ]
+}
+
+resource "aws_acm_certificate_validation" "ipfs" {
+  provider                = aws
+  certificate_arn         = aws_acm_certificate.ipfs.arn
+  validation_record_fqdns = [ for record in aws_route53_record.validation_ipfs : record.fqdn ]
 }
 
 ###############################
