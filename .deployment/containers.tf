@@ -27,6 +27,10 @@ resource "aws_cloudwatch_log_group" "frontend" {
   name = "/ecs/${var.project_name}-frontend-${var.environment}"
 }
 
+resource "aws_cloudwatch_log_group" "ipfs" {
+  name = "/ecs/${var.project_name}-ipfs-${var.environment}"
+}
+
 ########################
 #### ECS services ######
 ########################
@@ -50,6 +54,39 @@ resource "aws_ecs_service" "frontend" {
     subnets          = data.aws_subnets.main.ids
     assign_public_ip = true
     security_groups  = [ aws_security_group.ecs-frontend.id ]
+  }
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
+  lifecycle {
+    ignore_changes = [
+      task_definition
+    ]
+  }
+}
+
+resource "aws_ecs_service" "frontend" {
+  name            = "${var.project_name}-ipfs-${var.environment}"
+  cluster         = aws_ecs_cluster.main.arn
+  task_definition = aws_ecs_task_definition.ipfs.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  health_check_grace_period_seconds = 5
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ipfs.arn
+    container_name   = "${var.project_name}-ipfs-${var.environment}"
+    container_port   = 3000
+  }
+
+  network_configuration {
+    subnets          = data.aws_subnets.main.ids
+    assign_public_ip = true
+    security_groups  = [ aws_security_group.ecs-ipfs.id ]
   }
 
   deployment_circuit_breaker {
@@ -119,6 +156,39 @@ resource "aws_ecs_task_definition" "frontend" {
         secretOptions   = null
         options         = {
           awslogs-group         = aws_cloudwatch_log_group.frontend.name
+          awslogs-region        = data.aws_region.main.name
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+    }
+  ])
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+  }
+}
+
+resource "aws_ecs_task_definition" "ipfs" {
+  family                   = "${var.project_name}-ipfs-${var.environment}"
+  requires_compatibilities = [ "FARGATE" ]
+  network_mode             = "awsvpc"
+  cpu                      = var.task_definition_configs.ipfs.cpu
+  memory                   = var.task_definition_configs.ipfs.memory
+  execution_role_arn       = aws_iam_role.ecs_tasks_execution_role.arn
+  container_definitions = jsonencode([
+    {
+      name              = "${var.project_name}-ipfs-${var.environment}"
+      image             = "ipfs/go-ipfs"
+      cpu               = var.task_definition_configs.ipfs.cpu
+      memory            = var.task_definition_configs.ipfs.memory
+      memoryReservation = var.task_definition_configs.ipfs.soft_memory_limit
+      essential         = true
+      # portMappings      = [ ]
+      logConfiguration  = {
+        logDriver       = "awslogs"
+        secretOptions   = null
+        options         = {
+          awslogs-group         = aws_cloudwatch_log_group.ipfs.name
           awslogs-region        = data.aws_region.main.name
           awslogs-stream-prefix = "ecs"
         }

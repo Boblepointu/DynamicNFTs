@@ -27,4 +27,9 @@ task_definition_configs = {
     cpu               = 512
     soft_memory_limit = 1000
   }
+  ipfs = {
+    memory            = 4096
+    cpu               = 2048
+    soft_memory_limit = 4050
+  }
 }
