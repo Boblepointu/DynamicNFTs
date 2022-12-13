@@ -37,7 +37,7 @@ jobs:
 
             - name: Terraform Init
               run: |
-                  terraform -chdir=dynamic-nfts/.deployment init -backend-config="key=dynamic-nfts/${{ env.PROJECT_NAME }}_prod"
+                  terraform -chdir=dynamic-nfts/.deployment init -backend-config="key=${{ env.PROJECT_NAME }}/prod"
 
             - name: Terraform apply
               env:
