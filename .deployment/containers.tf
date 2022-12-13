@@ -80,7 +80,7 @@ resource "aws_ecs_service" "ipfs" {
   load_balancer {
     target_group_arn = aws_lb_target_group.ipfs.arn
     container_name   = "${var.project_name}-ipfs-${var.environment}"
-    container_port   = 3000
+    container_port   = 5001
   }
 
   network_configuration {
@@ -183,7 +183,12 @@ resource "aws_ecs_task_definition" "ipfs" {
       memory            = var.task_definition_configs.ipfs.memory
       memoryReservation = var.task_definition_configs.ipfs.soft_memory_limit
       essential         = true
-      # portMappings      = [ ]
+      portMappings      = [
+        {
+          containerPort = 5001
+          hostPort      = 5001
+        }
+      ]
       logConfiguration  = {
         logDriver       = "awslogs"
         secretOptions   = null
