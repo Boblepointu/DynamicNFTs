@@ -31,3 +31,11 @@ resource "aws_route53_record" "frontend" {
   ttl     = "10"
   records = [ aws_lb.frontend.dns_name ]
 }
+
+resource "aws_route53_record" "ipfs" {
+  zone_id = data.aws_route53_zone.frenchbtc-fr.zone_id
+  name    = var.lb_dns_record_ipfs
+  type    = "CNAME"
+  ttl     = "10"
+  records = [ aws_lb.ipfs.dns_name ]
+}
