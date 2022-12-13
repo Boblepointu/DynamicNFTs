@@ -68,7 +68,7 @@ resource "aws_ecs_service" "frontend" {
   }
 }
 
-resource "aws_ecs_service" "frontend" {
+resource "aws_ecs_service" "ipfs" {
   name            = "${var.project_name}-ipfs-${var.environment}"
   cluster         = aws_ecs_cluster.main.arn
   task_definition = aws_ecs_task_definition.ipfs.arn
