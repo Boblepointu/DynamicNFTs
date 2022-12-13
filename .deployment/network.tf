@@ -36,7 +36,7 @@ resource "aws_security_group" "ecs-frontend" {
 }
 
 resource "aws_security_group" "ecs-ipfs" {
-  name = "${var.project_name}-ecs-frontend-${var.environment}"
+  name = "${var.project_name}-ecs-ipfs-${var.environment}"
 
   ingress {
     from_port         = 0
@@ -84,7 +84,7 @@ resource "aws_security_group" "lb-frontend" {
 }
 
 resource "aws_security_group" "lb-ipfs" {
-  name = "${var.project_name}-lb-frontend-${var.environment}"
+  name = "${var.project_name}-lb-ipfs-${var.environment}"
 
   ingress {
     description      = "HTTPS for all"
