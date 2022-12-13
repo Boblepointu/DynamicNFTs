@@ -32,6 +32,11 @@ variable "lb_dns_record_frontend" {
   description = "AWS route53 record domain name for ALB"
 }
 
+variable "lb_dns_record_ipfs" {
+  type        = string
+  description = "AWS route53 record domain name for ALB"
+}
+
 # Network
 
 variable "vpc_id" {
