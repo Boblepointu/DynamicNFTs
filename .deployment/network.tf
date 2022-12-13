@@ -103,12 +103,7 @@ resource "aws_lb_listener" "backend-https" {
   certificate_arn = aws_acm_certificate.backend.arn
 
   default_action {
-    # type             = "redirect"
     type             = "forward"
-    # redirect {
-    #   status_code = "HTTP_301"
-    #   host = "perdu.com"
-    # }
     target_group_arn = aws_lb_target_group.backend.arn
   }
 }
