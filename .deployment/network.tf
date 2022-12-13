@@ -118,7 +118,7 @@ resource "aws_lb_target_group" "backend" {
   port                 = 80
   protocol             = "HTTP"
   target_type          = "ip"
-  vpc_id               = var.vpc_id
+  vpc_id               = data.aws_vpc.main.id
   deregistration_delay = 5
   health_check {
     enabled           = true
