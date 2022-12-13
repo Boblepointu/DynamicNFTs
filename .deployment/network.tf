@@ -36,7 +36,7 @@ resource "aws_security_group" "ecs-backend" {
 }
 
 resource "aws_security_group" "lb-backend" {
-  name = "${var.project_name}-backend-${var.environment}"
+  name = "${var.project_name}-lb-backend-${var.environment}"
 
   ingress {
     description      = "HTTPS for all"
