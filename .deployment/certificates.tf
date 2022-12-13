@@ -13,7 +13,7 @@ resource "aws_acm_certificate" "backend" {
 }
 
 resource "aws_acm_certificate_validation" "default" {
-  provider            = aws
-  certificate_arn     = aws_acm_certificate.backend.arn
+  provider                = aws
+  certificate_arn         = aws_acm_certificate.backend.arn
   validation_record_fqdns = [ for record in aws_route53_record.validation : record.fqdn ]
 }
