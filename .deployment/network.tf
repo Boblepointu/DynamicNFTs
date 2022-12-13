@@ -17,8 +17,8 @@ data "aws_subnets" "main" {
 #### Security group ####
 ########################
 
-resource "aws_security_group" "ecs-backend" {
-  name = "${var.project_name}-ecs-backend-${var.environment}"
+resource "aws_security_group" "ecs-frontend" {
+  name = "${var.project_name}-ecs-frontend-${var.environment}"
 
   ingress {
     from_port         = 0
@@ -35,8 +35,8 @@ resource "aws_security_group" "ecs-backend" {
   }
 }
 
-resource "aws_security_group" "lb-backend" {
-  name = "${var.project_name}-lb-backend-${var.environment}"
+resource "aws_security_group" "lb-frontend" {
+  name = "${var.project_name}-lb-frontend-${var.environment}"
 
   ingress {
     description      = "HTTPS for all"
@@ -66,20 +66,20 @@ resource "aws_security_group" "lb-backend" {
 }
 
 ##################################
-#### Load balancer backend   #####
+#### Load balancer frontend   #####
 ##################################
 
-resource "aws_lb" "backend" {
-  name               = "${var.project_name}-backend-${var.environment}"
+resource "aws_lb" "frontend" {
+  name               = "${var.project_name}-frontend-${var.environment}"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [ aws_security_group.lb-backend.id ]
+  security_groups    = [ aws_security_group.lb-frontend.id ]
 
   subnets            = data.aws_subnets.main.ids
 }
 
-resource "aws_lb_listener" "backend-http" {
-  load_balancer_arn = aws_lb.backend.arn
+resource "aws_lb_listener" "frontend-http" {
+  load_balancer_arn = aws_lb.frontend.arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -94,22 +94,22 @@ resource "aws_lb_listener" "backend-http" {
   }
 }
 
-resource "aws_lb_listener" "backend-https" {
-  load_balancer_arn = aws_lb.backend.arn
+resource "aws_lb_listener" "frontend-https" {
+  load_balancer_arn = aws_lb.frontend.arn
 
   port            = "443"
   protocol        = "HTTPS"
   ssl_policy      = "ELBSecurityPolicy-2016-08"
-  certificate_arn = aws_acm_certificate.backend.arn
+  certificate_arn = aws_acm_certificate.frontend.arn
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.backend.arn
+    target_group_arn = aws_lb_target_group.frontend.arn
   }
 }
 
-resource "aws_lb_target_group" "backend" {
-  name                 = "${var.project_name}-backend-${var.environment}"
+resource "aws_lb_target_group" "frontend" {
+  name                 = "${var.project_name}-frontend-${var.environment}"
   port                 = 80
   protocol             = "HTTP"
   target_type          = "ip"

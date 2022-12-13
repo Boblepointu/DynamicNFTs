@@ -1,5 +1,5 @@
 terraform {
-  backend "s3" {
+  frontend "s3" {
     bucket = "frenchbtc-terraform-state-files"
     region = "eu-west-3"
   }
@@ -27,7 +27,7 @@ variable "dns_zone_name" {
   description = "Domain name"
 }
 
-variable "lb_dns_record_backend" {
+variable "lb_dns_record_frontend" {
   type        = string
   description = "AWS route53 record domain name for ALB"
 }
@@ -43,5 +43,5 @@ variable "vpc_id" {
 
 variable "task_definition_configs" {
   type        = map(any)
-  description = "Configuration of ECS backend task"
+  description = "Configuration of ECS frontend task"
 }

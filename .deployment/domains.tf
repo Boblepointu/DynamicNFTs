@@ -8,7 +8,7 @@ data "aws_route53_zone" "frenchbtc-fr" {
 
 resource "aws_route53_record" "validation" {
   for_each = {
-    for dvo in aws_acm_certificate.backend.domain_validation_options : dvo.domain_name => {
+    for dvo in aws_acm_certificate.frontend.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
@@ -24,10 +24,10 @@ resource "aws_route53_record" "validation" {
   ttl       = 10
 }
 
-resource "aws_route53_record" "backend" {
+resource "aws_route53_record" "frontend" {
   zone_id = data.aws_route53_zone.frenchbtc-fr.zone_id
-  name    = var.lb_dns_record_backend
+  name    = var.lb_dns_record_frontend
   type    = "CNAME"
   ttl     = "10"
-  records = [ aws_lb.backend.dns_name ]
+  records = [ aws_lb.frontend.dns_name ]
 }

@@ -10,7 +10,7 @@ vpc_id                  = "vpc-052bc5d16953c7e7b"
 # Custom dns
 # The dns zone must be preregistered and domain name NS records pointed to AWS NS.
 dns_zone_name           = "frenchbtc.fr."
-lb_dns_record_backend   = "dynamic-nfts.frenchbtc.fr"
+lb_dns_record_frontend   = "dynamic-nfts.frenchbtc.fr"
 
 ########################
 ## User defined vars ###
@@ -22,7 +22,7 @@ environment             = "prod"
 project_name            = "dynamic-nfts"
 # ECS task definitions. How powerful we want the ECS pods.
 task_definition_configs = {
-  backend = {
+  frontend = {
     memory            = 1024
     cpu               = 512
     soft_memory_limit = 1000

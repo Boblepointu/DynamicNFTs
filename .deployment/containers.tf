@@ -10,8 +10,8 @@ resource "aws_ecs_cluster" "main" {
 #### ECR ressource #####
 ########################
 
-resource "aws_ecr_repository" "backend" {
-  name                 = "${var.project_name}-backend-${var.environment}"
+resource "aws_ecr_repository" "frontend" {
+  name                 = "${var.project_name}-frontend-${var.environment}"
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
@@ -23,33 +23,33 @@ resource "aws_ecr_repository" "backend" {
 #### Log groups ########
 ########################
 
-resource "aws_cloudwatch_log_group" "backend" {
-  name = "/ecs/${var.project_name}-backend-${var.environment}"
+resource "aws_cloudwatch_log_group" "frontend" {
+  name = "/ecs/${var.project_name}-frontend-${var.environment}"
 }
 
 ########################
 #### ECS services ######
 ########################
 
-resource "aws_ecs_service" "backend" {
-  name            = "${var.project_name}-backend-${var.environment}"
+resource "aws_ecs_service" "frontend" {
+  name            = "${var.project_name}-frontend-${var.environment}"
   cluster         = aws_ecs_cluster.main.arn
-  task_definition = aws_ecs_task_definition.backend.arn
+  task_definition = aws_ecs_task_definition.frontend.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
   health_check_grace_period_seconds = 5
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.backend.arn
-    container_name   = "${var.project_name}-backend-${var.environment}"
+    target_group_arn = aws_lb_target_group.frontend.arn
+    container_name   = "${var.project_name}-frontend-${var.environment}"
     container_port   = 3000
   }
 
   network_configuration {
     subnets          = data.aws_subnets.main.ids
     assign_public_ip = true
-    security_groups  = [ aws_security_group.ecs-backend.id ]
+    security_groups  = [ aws_security_group.ecs-frontend.id ]
   }
 
   deployment_circuit_breaker {
@@ -93,20 +93,20 @@ resource "aws_iam_role_policy_attachment" "ecs_tasks_execution_role" {
 #### ECS tasks #########
 ########################
 
-resource "aws_ecs_task_definition" "backend" {
-  family                   = "${var.project_name}-backend-${var.environment}"
+resource "aws_ecs_task_definition" "frontend" {
+  family                   = "${var.project_name}-frontend-${var.environment}"
   requires_compatibilities = [ "FARGATE" ]
   network_mode             = "awsvpc"
-  cpu                      = var.task_definition_configs.backend.cpu
-  memory                   = var.task_definition_configs.backend.memory
+  cpu                      = var.task_definition_configs.frontend.cpu
+  memory                   = var.task_definition_configs.frontend.memory
   execution_role_arn       = aws_iam_role.ecs_tasks_execution_role.arn
   container_definitions = jsonencode([
     {
-      name              = "${var.project_name}-backend-${var.environment}"
+      name              = "${var.project_name}-frontend-${var.environment}"
       image             = "rebelthor/sleep"
-      cpu               = var.task_definition_configs.backend.cpu
-      memory            = var.task_definition_configs.backend.memory
-      memoryReservation = var.task_definition_configs.backend.soft_memory_limit
+      cpu               = var.task_definition_configs.frontend.cpu
+      memory            = var.task_definition_configs.frontend.memory
+      memoryReservation = var.task_definition_configs.frontend.soft_memory_limit
       essential         = true
       portMappings      = [
         {
@@ -118,7 +118,7 @@ resource "aws_ecs_task_definition" "backend" {
         logDriver       = "awslogs"
         secretOptions   = null
         options         = {
-          awslogs-group         = aws_cloudwatch_log_group.backend.name
+          awslogs-group         = aws_cloudwatch_log_group.frontend.name
           awslogs-region        = data.aws_region.main.name
           awslogs-stream-prefix = "ecs"
         }
