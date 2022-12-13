@@ -1,5 +1,5 @@
 terraform {
-  frontend "s3" {
+  backend "s3" {
     bucket = "frenchbtc-terraform-state-files"
     region = "eu-west-3"
   }
