@@ -1,0 +1,50 @@
+name: DynamicNFTs prod pipe
+
+on:
+    push:
+        branches:
+          - "master"
+
+env:
+    ENVIRONMENT: prod
+    PROJECT_NAME: dynamic-nfts
+
+jobs:
+    deploy-infra:
+        runs-on: ubuntu-22.04
+
+        steps:
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: "16"
+
+            - name: Checkout repository
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.ref_name }}
+                  path: dynamic-nfts
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: eu-west-3
+
+            - uses: hashicorp/setup-terraform@v2
+              with:
+                  terraform_version: 1.2.2
+
+            - name: Terraform Init
+              run: |
+                  terraform -chdir=dynamic-nfts/.deployment init -backend-config="key=dynamic-nfts/${{ env.PROJECT_NAME }}_prod"
+
+            - name: Terraform apply
+              env:
+                TF_VAR_project_name: ${{ env.PROJECT_NAME }}
+                TF_VAR_environment: ${{ env.ENVIRONMENT }}
+              run: terraform -chdir=dynamic-nfts/.deployment apply -var-file="variables.tfvars" -auto-approve
+
+              
+
+
