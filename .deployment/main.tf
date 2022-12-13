@@ -12,7 +12,7 @@ provider "aws" {
       Environment = var.environment
       Owner       = "AG"
       Provisioner = "Terraform"
-      Project     = "${var.project_name}-sample"
+      Project     = "${var.project_name}"
     }
   }
 }
