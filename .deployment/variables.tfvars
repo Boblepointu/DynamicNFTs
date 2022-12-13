@@ -10,7 +10,8 @@ vpc_id                  = "vpc-052bc5d16953c7e7b"
 # Custom dns
 # The dns zone must be preregistered and domain name NS records pointed to AWS NS.
 dns_zone_name           = "frenchbtc.fr."
-lb_dns_record_frontend   = "dynamic-nfts.frenchbtc.fr"
+lb_dns_record_frontend  = "dynamic-nfts.frenchbtc.fr"
+lb_dns_record_ipfs      = "dynamic-nfts-gateway.frenchbtc.fr"
 
 ########################
 ## User defined vars ###
