@@ -12,6 +12,6 @@ RUN cd go-ipfs && bash install.sh
 
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 80
+EXPOSE 3000
 
 CMD htpasswd -bc /.htpasswd $LOGIN $PASSWORD && ./usr/sbin/nginx && ipfs init || true && ipfs daemon
