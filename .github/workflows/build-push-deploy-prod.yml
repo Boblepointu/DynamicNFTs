@@ -178,16 +178,17 @@ jobs:
             uses: aws-actions/amazon-ecr-login@v1              
 
           - name: Download task definition
+            id: download-task-definition
             run: |
               aws ecs describe-task-definition --task-definition $(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name) --query taskDefinition > task-definition.json
-              export CONTAINER_NAME=$(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name)
+              echo "CONTAINER_NAME=$(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name)" > $GITHUB_OUTPUT
 
           - name: Replace image tag in task definition
             id: fillin-task-definition
             uses: aws-actions/amazon-ecs-render-task-definition@v1
             with:
               task-definition: task-definition.json
-              container-name: $CONTAINER_NAME
+              container-name: ${{ steps.run_tests.outputs.CONTAINER_NAME }}
               image: ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):${{ env.IPFS_IMAGE_TAG }}
 
           - name: Deploying task definition
