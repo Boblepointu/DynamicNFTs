@@ -14,4 +14,9 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 3000
 
-CMD htpasswd -bc /.htpasswd $LOGIN $PASSWORD && ./usr/sbin/nginx && ipfs init || true && ipfs daemon
+CMD htpasswd -bc /.htpasswd $LOGIN $PASSWORD && \
+    ./usr/sbin/nginx && \
+    ipfs init || true \
+    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]' \
+    ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST"]' \
+    ipfs daemon
