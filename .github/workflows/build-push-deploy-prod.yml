@@ -190,24 +190,19 @@ jobs:
               echo "aws_ecs_service-ipfs-name=$(cat /tmp/aws_ecs_service-ipfs-name/aws_ecs_service-ipfs-name)\n" >> $GITHUB_OUTPUT
               echo "aws_ecr_repository-ipfs-name=$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name)\n" >> $GITHUB_OUTPUT
               echo "aws_ecs_task_definition-ipfs-name=$(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name)\n" >> $GITHUB_OUTPUT
-              echo $GITHUB_OUTPUT
-
-          - name: Display GITHUB_OUTPUT
-            run: |
-              echo ${{ steps.artifacts.outputs.aws_ecs_task_definition-ipfs-name }}
-
+              
           - name: Replace image tag in task definition
             id: fillin-task-definition
             uses: aws-actions/amazon-ecs-render-task-definition@v1
             with:
               task-definition: task-definition.json
               container-name: ${{ steps.artifacts.outputs.aws_ecs_task_definition-ipfs-name }}
-              image: ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):${{ env.IPFS_IMAGE_TAG }}
+              image: ${{ steps.login-ecr.outputs.registry }}/${{ steps.artifacts.outputs.aws_ecr_repository-ipfs-name }}:${{ env.IPFS_IMAGE_TAG }}
 
           - name: Deploying task definition
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
             with:
               task-definition: ${{ steps.fillin-task-definition.outputs.task-definition }}
-              service: $(cat /tmp/aws_ecs_service-ipfs-name)
-              cluster: $(cat /tmp/aws_ecs_cluster-main-name)
+              service: ${{ steps.artifacts.outputs.aws_ecs_service-ipfs-name }}
+              cluster: ${{ steps.artifacts.outputs.aws_ecs_cluster-main-name }}
               wait-for-service-stability: true
