@@ -16,12 +16,8 @@ jobs:
         runs-on: ubuntu-22.04
 
         steps:
-            - uses: actions/setup-node@v2
-              with:
-                  node-version: "16"
-
             - name: Checkout repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   ref: ${{ github.ref_name }}
                   path: dynamic-nfts
@@ -52,12 +48,12 @@ jobs:
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-ipfs-name 
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-frontend-name
 
-            - uses: actions/upload-artifact@v2
+            - uses: actions/upload-artifact@v3
               with:
                 name: aws_ecr_repository-ipfs-name
                 path: aws_ecr_repository-ipfs-name
 
-            - uses: actions/upload-artifact@v2
+            - uses: actions/upload-artifact@v3
               with:
                 name: aws_ecr_repository-frontend-name
                 path: aws_ecr_repository-frontend-name  
@@ -67,20 +63,15 @@ jobs:
         needs: deploy-infra
 
         steps:
-            # - uses: actions/setup-node@v2
-            #   with:
-            #       node-version: "16"
-
             - name: Checkout repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   ref: ${{ github.ref_name }}
                   path: ${{ env.PROJECT_NAME }}
 
             - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v1
+              uses: aws-actions/configure-aws-credentials@v2
               with:
-                # Actions cannot access secrets so need to pass them in as inputs
                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                 aws-region: ${{ env.AWS_REGION }}
@@ -89,7 +80,7 @@ jobs:
               id: login-ecr
               uses: aws-actions/amazon-ecr-login@v1
 
-            - uses: actions/download-artifact@v2
+            - uses: actions/download-artifact@v3
               with:
                 name: aws_ecr_repository-ipfs-name
                 path: /tmp/aws_ecr_repository-ipfs-name
@@ -99,16 +90,14 @@ jobs:
                 cd ${{ env.PROJECT_NAME }}/ipfs
                 docker build -t ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):${{ env.IPFS_IMAGE_TAG }} .    
 
-            - name: tag docker image
+            - name: Tag docker image
               run: |
                 docker tag ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):${{ env.IPFS_IMAGE_TAG }} ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):latest
-              shell: bash
 
             - name: Push docker image
               run: |
                 docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):${{ env.IPFS_IMAGE_TAG }}
                 docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):latest
-              shell: bash
               
 
 
