@@ -66,6 +66,10 @@ resource "aws_ecs_service" "frontend" {
       task_definition
     ]
   }
+
+  depends_on = [
+    aws_lb_listener.frontend-https
+  ]
 }
 
 resource "aws_ecs_service" "ipfs" {
@@ -99,6 +103,10 @@ resource "aws_ecs_service" "ipfs" {
       task_definition
     ]
   }
+
+  depends_on = [
+    aws_lb_listener.ipfs-https
+  ]
 }
 
 #####################################
