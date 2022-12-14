@@ -50,6 +50,8 @@ jobs:
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name > aws_ecr_repository-ipfs-name 
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name > aws_ecr_repository-frontend-name
+                cat aws_ecr_repository-ipfs-name
+                cat aws_ecr_repository-frontend-name
                 cat aws_ecr_repository-ipfs-name | sed 's/"//g' > aws_ecr_repository-ipfs-name
                 cat aws_ecr_repository-frontend-name | sed 's/"//g' > aws_ecr_repository-frontend-name
 
