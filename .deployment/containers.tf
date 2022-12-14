@@ -172,6 +172,17 @@ resource "aws_iam_policy" "ipfs-secrets" {
           ]
           Effect   = "Allow"
           Resource = aws_secretsmanager_secret.ipfs-password.arn
+        },{
+          Action = [
+            "ecr:GetAuthorizationToken",
+            "ecr:BatchCheckLayerAvailability",
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:BatchGetImage",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ],
+          Effect   = "Allow",
+          Resource = "*"
         }
       ]
   })  
@@ -180,11 +191,6 @@ resource "aws_iam_policy" "ipfs-secrets" {
 resource "aws_iam_role" "ecs_ipfs_tasks_execution_role" {
   name               = "${var.project_name}-ipfs-${var.environment}"
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_ipfs_tasks_default" {
-  role       = aws_iam_role.ecs_ipfs_tasks_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_ipfs_tasks_secrets" {
