@@ -217,7 +217,7 @@ resource "aws_lb_listener" "ipfs-https" {
 
 resource "aws_lb_target_group" "ipfs" {
   name                 = "${var.project_name}-ipfs-${var.environment}"
-  port                 = 80
+  port                 = 3000
   protocol             = "HTTP"
   target_type          = "ip"
   vpc_id               = data.aws_vpc.main.id
