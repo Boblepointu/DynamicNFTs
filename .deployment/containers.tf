@@ -110,7 +110,7 @@ resource "aws_ecs_service" "ipfs" {
   load_balancer {
     target_group_arn = aws_lb_target_group.ipfs.arn
     container_name   = "${var.project_name}-ipfs-${var.environment}"
-    container_port   = 80
+    container_port   = 3000
   }
 
   network_configuration {
