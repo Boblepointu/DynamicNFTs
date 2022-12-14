@@ -53,40 +53,44 @@ jobs:
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecs_cluster-main-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-frontend-name
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecs_cluster-main-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_cluster-main-name
 
-# 
-
-
-            - uses: actions/upload-artifact@v3
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
               with:
                 name: aws_ecr_repository-ipfs-name
                 path: aws_ecr_repository-ipfs-name
 
-            - uses: actions/upload-artifact@v3
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
               with:
                 name: aws_ecr_repository-frontend-name
                 path: aws_ecr_repository-frontend-name
 
-            - uses: actions/upload-artifact@v3
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_task_definition-ipfs-name
                 path: aws_ecs_task_definition-ipfs-name
 
-            - uses: actions/upload-artifact@v3
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_task_definition-frontend-name
                 path: aws_ecs_task_definition-frontend-name
 
-            - uses: actions/upload-artifact@v3
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_service-ipfs-name
                 path: aws_ecs_service-ipfs-name
 
-            - uses: actions/upload-artifact@v3
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_service-frontend-name
                 path: aws_ecs_service-frontend-name
 
-            - uses: actions/upload-artifact@v3
+            - name: Upload artifact
+              uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_cluster-main-name
                 path: aws_ecs_cluster-main-name
@@ -113,7 +117,8 @@ jobs:
               id: login-ecr
               uses: aws-actions/amazon-ecr-login@v1
 
-            - uses: actions/download-artifact@v3
+            - name: Download artifact
+              uses: actions/download-artifact@v3
               with:
                 name: aws_ecr_repository-ipfs-name
                 path: /tmp/aws_ecr_repository-ipfs-name
