@@ -186,11 +186,11 @@ jobs:
           - name: Fill GITHUB_OUTPUT
             id: artifacts
             run: |
-              echo "aws_ecs_cluster-main-name=$(cat /tmp/aws_ecs_cluster-main-name/aws_ecs_cluster-main-name)\n" >> $GITHUB_OUTPUT
-              echo "aws_ecs_service-ipfs-name=$(cat /tmp/aws_ecs_service-ipfs-name/aws_ecs_service-ipfs-name)\n" >> $GITHUB_OUTPUT
-              echo "aws_ecr_repository-ipfs-name=$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name)\n" >> $GITHUB_OUTPUT
-              echo "aws_ecs_task_definition-ipfs-name=$(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name)\n" >> $GITHUB_OUTPUT
-              
+              echo "aws_ecs_cluster-main-name=$(cat /tmp/aws_ecs_cluster-main-name/aws_ecs_cluster-main-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecs_service-ipfs-name=$(cat /tmp/aws_ecs_service-ipfs-name/aws_ecs_service-ipfs-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecr_repository-ipfs-name=$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecs_task_definition-ipfs-name=$(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name)" >> $GITHUB_OUTPUT
+
           - name: Replace image tag in task definition
             id: fillin-task-definition
             uses: aws-actions/amazon-ecs-render-task-definition@v1
