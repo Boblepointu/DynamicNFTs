@@ -12,7 +12,6 @@ resource "aws_ecs_cluster" "main" {
 
 resource "aws_ecr_repository" "frontend" {
   name                 = "${var.project_name}-frontend-${var.environment}"
-  image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
@@ -25,7 +24,6 @@ output "aws_ecr_repository-frontend-name" {
 
 resource "aws_ecr_repository" "ipfs" {
   name                 = "${var.project_name}-ipfs-${var.environment}"
-  image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
