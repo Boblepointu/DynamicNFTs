@@ -290,11 +290,6 @@ resource "aws_ecs_task_definition" "ipfs" {
           containerPort = 3000
           hostPort      = 3000
         }
-        # ,
-        # {
-        #   containerPort = 4001
-        #   hostPort      = 4001
-        # }
       ]
       logConfiguration  = {
         logDriver       = "awslogs"
