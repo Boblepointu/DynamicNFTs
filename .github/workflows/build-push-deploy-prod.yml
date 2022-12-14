@@ -9,6 +9,7 @@ env:
     ENVIRONMENT: prod
     PROJECT_NAME: dynamic-nfts
     IPFS_IMAGE_TAG: ${{ github.ref_name }}
+    AWS_REGION: eu-west-3
 
 jobs:
     deploy-infra:
@@ -30,7 +31,7 @@ jobs:
               with:
                   aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: eu-west-3
+                  aws-region: ${{ env.AWS_REGION }}
 
             - uses: hashicorp/setup-terraform@v2
               with:
@@ -76,13 +77,17 @@ jobs:
                   ref: ${{ github.ref_name }}
                   path: ${{ env.PROJECT_NAME }}
 
-            - id: login-aws
-              name: Configure AWS credentials
+            - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
               with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: eu-west-3
+                # Actions cannot access secrets so need to pass them in as inputs
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: ${{ env.AWS_REGION }}
+            
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
 
             - uses: actions/download-artifact@v2
               with:
@@ -92,7 +97,7 @@ jobs:
             - name: Build docker image
               run: |
                 cd ${{ env.PROJECT_NAME }}/ipfs
-                docker build -t ${{ steps.login-aws.outputs.ecr-registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name):${{ env.IPFS_IMAGE_TAG }} .    
+                docker build -t ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name):${{ env.IPFS_IMAGE_TAG }} .    
 
               
 
