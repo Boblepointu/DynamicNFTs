@@ -95,7 +95,7 @@ resource "aws_ecs_service" "frontend" {
 }
 
 output "aws_ecs_service-frontend-name" {
-  value = aws_ecs_service.frontend.name
+  value = "${var.project_name}-frontend-${var.environment}"
 }
 
 resource "aws_ecs_service" "ipfs" {
@@ -136,7 +136,7 @@ resource "aws_ecs_service" "ipfs" {
 }
 
 output "aws_ecs_service-ipfs-name" {
-  value = aws_ecs_task_definition.ipfs.name
+  value = "${var.project_name}-ipfs-${var.environment}"
 }
 
 #####################################
