@@ -45,15 +45,17 @@ jobs:
                 TF_VAR_environment: ${{ env.ENVIRONMENT }}
               run: terraform -chdir=dynamic-nfts/.deployment apply -var-file="variables.tfvars" -auto-approve
 
-            - run: | 
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name
+            - name: Recover Terraform outputs
+              run: | 
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name > aws_ecr_repository-ipfs-name 
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name > aws_ecr_repository-frontend-name
+
+            - name: Parse and treat Terraform outputs
+              run: |
                 cat aws_ecr_repository-ipfs-name
                 cat aws_ecr_repository-frontend-name
                 cat aws_ecr_repository-ipfs-name | sed 's/"//g' > aws_ecr_repository-ipfs-name
-                cat aws_ecr_repository-frontend-name | sed 's/"//g' > aws_ecr_repository-frontend-name
+                cat aws_ecr_repository-frontend-name | sed 's/"//g' > aws_ecr_repository-frontend-name                
 
             - uses: actions/upload-artifact@v2
               with:
