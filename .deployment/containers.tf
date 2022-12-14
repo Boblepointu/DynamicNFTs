@@ -183,7 +183,14 @@ resource "aws_iam_policy" "ipfs-secrets" {
           ],
           Effect   = "Allow",
           Resource = "*"
-        }
+        },{
+          Action = [
+            "elasticfilesystem:ClientMount",
+            "elasticfilesystem:ClientWrite"
+          ],
+          Effect   = "Allow",
+          Resource = aws_efs_file_system.ipfs.arn
+        }   
       ]
   })  
 }
@@ -314,7 +321,6 @@ resource "aws_ecs_task_definition" "ipfs" {
     name = "ipfs-storage"
     efs_volume_configuration {
       file_system_id          = aws_efs_file_system.ipfs.id
-      root_directory          = "/"
       transit_encryption      = "ENABLED"
       authorization_config {
         access_point_id = aws_efs_access_point.ipfs-0.id
