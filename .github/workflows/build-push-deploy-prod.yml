@@ -54,18 +54,18 @@ jobs:
               run: |
                 cat aws_ecr_repository-ipfs-name
                 cat aws_ecr_repository-frontend-name
-                cat aws_ecr_repository-ipfs-name | sed 's/"//g' > aws_ecr_repository-ipfs-name
-                cat aws_ecr_repository-frontend-name | sed 's/"//g' > aws_ecr_repository-frontend-name                
+                cat aws_ecr_repository-ipfs-name | sed 's/"//g' > aws_ecr_repository-ipfs-name-treated
+                cat aws_ecr_repository-frontend-name | sed 's/"//g' > aws_ecr_repository-frontend-name-treated           
 
             - uses: actions/upload-artifact@v2
               with:
                 name: aws_ecr_repository-ipfs-name
-                path: aws_ecr_repository-ipfs-name 
+                path: aws_ecr_repository-ipfs-name -treated
 
             - uses: actions/upload-artifact@v2
               with:
                 name: aws_ecr_repository-frontend-name
-                path: aws_ecr_repository-frontend-name                 
+                path: aws_ecr_repository-frontend-name-treated              
 
     build-ipfs:
         runs-on: ubuntu-22.04
