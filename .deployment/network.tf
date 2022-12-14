@@ -223,6 +223,7 @@ resource "aws_lb_target_group" "ipfs" {
   vpc_id               = data.aws_vpc.main.id
   deregistration_delay = 5
   health_check {
+    port              = 3000    
     enabled           = true
     healthy_threshold = 2
     interval          = 5
