@@ -50,3 +50,13 @@ variable "task_definition_configs" {
   type        = map(any)
   description = "Configuration of ECS frontend task"
 }
+
+# IPFS Configuration
+variable "ipfs_login" {
+  type        = string
+  description = "The login to access IPFS admin port"
+}
+variable "ipfs_password" {
+  type        = string
+  description = "The password to access IPFS admin port"
+}

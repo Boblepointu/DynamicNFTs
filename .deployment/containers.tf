@@ -183,6 +183,7 @@ resource "aws_ecs_task_definition" "ipfs" {
   cpu                      = var.task_definition_configs.ipfs.cpu
   memory                   = var.task_definition_configs.ipfs.memory
   execution_role_arn       = aws_iam_role.ecs_tasks_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_tasks_execution_role.arn
   container_definitions = jsonencode([
     {
       name              = "${var.project_name}-ipfs-${var.environment}"
@@ -206,8 +207,38 @@ resource "aws_ecs_task_definition" "ipfs" {
           awslogs-stream-prefix = "ecs"
         }
       }
+      mountPoints = [
+        {
+          readOnly        = null,
+          containerPath   = "/data",
+          sourceVolume    = "ipfs-storage"
+        }
+      ]
+      secrets = [
+        {
+          name      = "LOGIN",
+          valueFrom = aws_secretsmanager_secret.ipfs-login.arn
+        },
+        {
+          name      = "PASSWORD",
+          valueFrom = aws_secretsmanager_secret.ipfs-password.arn
+        }
+      ]           
     }
   ])
+
+  volume {
+    name = "ipfs-storage"
+    efs_volume_configuration {
+      file_system_id          = aws_efs_file_system.ipfs.id
+      root_directory          = "/"
+      transit_encryption      = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.ipfs-0.id
+        iam             = "ENABLED"
+      }
+    }
+  }
 
   runtime_platform {
     operating_system_family = "LINUX"

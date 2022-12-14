@@ -34,3 +34,6 @@ task_definition_configs = {
     soft_memory_limit = 4050
   }
 }
+# The login/password to access admin port on the IPFS ECS task
+ipfs_login    = "admin"
+ipfs_password = "123123abcabc***"
