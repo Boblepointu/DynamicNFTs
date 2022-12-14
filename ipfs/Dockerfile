@@ -14,4 +14,4 @@ COPY ./nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
-CMD htpasswd -bc /.htpasswd $LOGIN $PASSWORD && ./usr/sbin/nginx && ipfs init && ipfs daemon
+CMD echo "coucou" && htpasswd -bc /.htpasswd $LOGIN $PASSWORD && ./usr/sbin/nginx && ipfs init && ipfs daemon

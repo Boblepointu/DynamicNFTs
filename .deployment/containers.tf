@@ -116,7 +116,7 @@ resource "aws_ecs_service" "ipfs" {
   network_configuration {
     subnets          = data.aws_subnets.main.ids# [ data.aws_subnets.main.ids[2] ]
     assign_public_ip = true
-    security_groups  = [ aws_security_group.ecs-ipfs.id ]
+    security_groups  = ["sg-0f20dfc3b8d6d814b"]#[ aws_security_group.ecs-ipfs.id ]
   }
 
   deployment_circuit_breaker {
