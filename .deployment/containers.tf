@@ -6,6 +6,10 @@ resource "aws_ecs_cluster" "main" {
   name = "${var.project_name}-cluster-${var.environment}"
 }
 
+output "aws_ecs_cluster-main-name" {
+  value = aws_ecs_cluster.main.name
+}
+
 ########################
 #### ECR ressource #####
 ########################
@@ -90,6 +94,10 @@ resource "aws_ecs_service" "frontend" {
   ]
 }
 
+output "aws_ecs_service-frontend-name" {
+  value = aws_ecs_service.frontend.name
+}
+
 resource "aws_ecs_service" "ipfs" {
   name            = "${var.project_name}-ipfs-${var.environment}"
   cluster         = aws_ecs_cluster.main.arn
@@ -125,6 +133,10 @@ resource "aws_ecs_service" "ipfs" {
   depends_on = [
     aws_lb_listener.ipfs-https
   ]
+}
+
+output "aws_ecs_service-ipfs-name" {
+  value = aws_ecs_task_definition.ipfs.name
 }
 
 #####################################
@@ -192,6 +204,10 @@ resource "aws_ecs_task_definition" "frontend" {
   runtime_platform {
     operating_system_family = "LINUX"
   }
+}
+
+output "aws_ecs_task_definition-frontend-name" {
+  value = aws_ecs_task_definition.frontend.family
 }
 
 resource "aws_ecs_task_definition" "ipfs" {
@@ -265,4 +281,8 @@ resource "aws_ecs_task_definition" "ipfs" {
   runtime_platform {
     operating_system_family = "LINUX"
   }
+}
+
+output "aws_ecs_task_definition-ipfs-name" {
+  value = aws_ecs_task_definition.ipfs.family
 }
