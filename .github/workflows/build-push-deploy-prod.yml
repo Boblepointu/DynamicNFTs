@@ -135,13 +135,7 @@ jobs:
     deploy-ipfs:
         runs-on: ubuntu-22.04
         needs: build-ipfs
-          # ecs-task-definition: postgraphile-${{ env.ENVIRONMENT }}
-          # ecr-registry: ${{ steps.setup-aws.outputs.ecr-registry }}
-          # ecr-repository: ${{ env.ECR_REPOSITORY }}
-          # ecs-container: postgraphile-${{ env.ENVIRONMENT }}
-          # ecs-service: postgraphile-${{ env.ENVIRONMENT }}
-          # ecs-cluster: ${{ env.ECS_CLUSTER }}
-          # image-tag: ${{ env.IMAGE_TAG }}
+
         steps:
           - name: Download artifact
             uses: actions/download-artifact@v3
