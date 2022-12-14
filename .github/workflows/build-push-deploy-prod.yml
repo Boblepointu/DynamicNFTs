@@ -188,7 +188,7 @@ jobs:
             uses: aws-actions/amazon-ecs-render-task-definition@v1
             with:
               task-definition: task-definition.json
-              container-name: ${{ steps.run_tests.outputs.CONTAINER_NAME }}
+              container-name: ${{ steps.download-task-definition.outputs.CONTAINER_NAME }}
               image: ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):${{ env.IPFS_IMAGE_TAG }}
 
           - name: Deploying task definition
