@@ -175,7 +175,7 @@ jobs:
 
           - name: Download task definition
             run: |
-              aws ecs describe-task-definition --task-definition $(cat /tmp/aws_ecs_task_definition-ipfs-name) --query taskDefinition > task-definition.json
+              aws ecs describe-task-definition --task-definition $(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name) --query taskDefinition > task-definition.json
             shell: bash
 
           - name: Replace image tag in task definition
