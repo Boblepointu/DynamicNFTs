@@ -46,20 +46,20 @@ jobs:
               run: terraform -chdir=dynamic-nfts/.deployment apply -var-file="variables.tfvars" -auto-approve
 
             - run: | 
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name > /tmp/aws_ecr_repository-ipfs-name 
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name > /tmp/aws_ecr_repository-frontend-name
-                grep -o '".*"' /tmp/aws_ecr_repository-ipfs-name | sed 's/"//g' > /tmp/aws_ecr_repository-ipfs-name
-                grep -o '".*"' /tmp/aws_ecr_repository-frontend-name | sed 's/"//g' > /tmp/aws_ecr_repository-frontend-name
+                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name > aws_ecr_repository-ipfs-name 
+                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name > aws_ecr_repository-frontend-name
+                cat aws_ecr_repository-ipfs-name | sed 's/"//g' > aws_ecr_repository-ipfs-name
+                cat aws_ecr_repository-frontend-name | sed 's/"//g' > aws_ecr_repository-frontend-name
 
             - uses: actions/upload-artifact@v2
               with:
                 name: aws_ecr_repository-ipfs-name
-                path: /tmp/aws_ecr_repository-ipfs-name 
+                path: aws_ecr_repository-ipfs-name 
 
             - uses: actions/upload-artifact@v2
               with:
                 name: aws_ecr_repository-frontend-name
-                path: /tmp/aws_ecr_repository-frontend-name                 
+                path: aws_ecr_repository-frontend-name                 
 
     build-ipfs:
         runs-on: ubuntu-22.04
