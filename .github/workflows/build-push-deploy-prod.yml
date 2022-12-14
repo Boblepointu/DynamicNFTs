@@ -47,8 +47,8 @@ jobs:
 
             - name: Recover Terraform outputs
               run: | 
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name | grep -o '".*"' | sed 's/"//g' > aws_ecr_repository-ipfs-name 
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name | grep -o '".*"' | sed 's/"//g' > aws_ecr_repository-frontend-name
+                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-ipfs-name 
+                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-frontend-name
 
             - uses: actions/upload-artifact@v2
               with:
