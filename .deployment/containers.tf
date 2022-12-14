@@ -210,7 +210,7 @@ resource "aws_ecs_task_definition" "ipfs" {
       mountPoints = [
         {
           readOnly        = null,
-          containerPath   = "/data",
+          containerPath   = "/root/.ipfs",
           sourceVolume    = "ipfs-storage"
         }
       ]
