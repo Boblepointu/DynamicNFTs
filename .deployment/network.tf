@@ -49,7 +49,7 @@ resource "aws_security_group" "ecs-ipfs" {
   egress {
     from_port        = 0
     to_port          = 65535
-    protocol         = "-1"
+    protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
@@ -224,6 +224,62 @@ resource "aws_lb_target_group" "ipfs" {
   deregistration_delay = 5
   health_check {
     port              = 3000    
+    enabled           = true
+    healthy_threshold = 2
+    interval          = 5
+    timeout           = 3
+    path              = "/healthcheck"
+  }
+}
+
+resource "aws_lb" "ipfs-admin" {
+  name               = "${var.project_name}-ipfs-admin-${var.environment}"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [ aws_security_group.lb-ipfs.id ]
+
+  subnets            = data.aws_subnets.main.ids
+}
+
+resource "aws_lb_listener" "ipfs-admin-http" {
+  load_balancer_arn = aws_lb.ipfs-admin.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_lb_listener" "ipfs-admin-https" {
+  load_balancer_arn = aws_lb.ipfs-admin.arn
+
+  port            = 443
+  protocol        = "HTTPS"
+  ssl_policy      = "ELBSecurityPolicy-2016-08"
+  certificate_arn = aws_acm_certificate.ipfs-admin.arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ipfs-admin.arn
+  }
+}
+
+resource "aws_lb_target_group" "ipfs-admin" {
+  name                 = "${var.project_name}-ipfs-admin-${var.environment}"
+  port                 = 3001
+  protocol             = "HTTP"
+  target_type          = "ip"
+  vpc_id               = data.aws_vpc.main.id
+  deregistration_delay = 5
+  health_check {
+    port              = 3001   
     enabled           = true
     healthy_threshold = 2
     interval          = 5

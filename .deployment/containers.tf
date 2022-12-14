@@ -113,6 +113,12 @@ resource "aws_ecs_service" "ipfs" {
     container_port   = 3000
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ipfs-admin.arn
+    container_name   = "${var.project_name}-ipfs-${var.environment}"
+    container_port   = 3001
+  }
+
   network_configuration {
     subnets          = data.aws_subnets.main.ids# [ data.aws_subnets.main.ids[2] ]
     assign_public_ip = true
@@ -131,7 +137,8 @@ resource "aws_ecs_service" "ipfs" {
   }
 
   depends_on = [
-    aws_lb_listener.ipfs-https
+    aws_lb_listener.ipfs-https,
+    aws_lb_listener.ipfs-admin-https
   ]
 }
 
@@ -289,6 +296,10 @@ resource "aws_ecs_task_definition" "ipfs" {
         {
           containerPort = 3000
           hostPort      = 3000
+        },
+        {
+          containerPort = 3001
+          hostPort      = 3001
         }
       ]
       logConfiguration  = {
