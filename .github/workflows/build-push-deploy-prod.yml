@@ -45,13 +45,29 @@ jobs:
                 TF_VAR_environment: ${{ env.ENVIRONMENT }}
               run: terraform -chdir=dynamic-nfts/.deployment apply -var-file="variables.tfvars" -auto-approve
 
+            - run: | 
+                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name > /tmp/aws_ecr_repository-ipfs-name 
+                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name > /tmp/aws_ecr_repository-frontend-name
+                grep -o '".*"' /tmp/aws_ecr_repository-ipfs-name | sed 's/"//g' > /tmp/aws_ecr_repository-ipfs-name
+                grep -o '".*"' /tmp/aws_ecr_repository-frontend-name | sed 's/"//g' > /tmp/aws_ecr_repository-frontend-name
+
+            - uses: actions/upload-artifact@v2
+              with:
+                name: aws_ecr_repository-ipfs-name
+                path: /tmp/aws_ecr_repository-ipfs-name 
+
+            - uses: actions/upload-artifact@v2
+              with:
+                name: aws_ecr_repository-frontend-name
+                path: /tmp/aws_ecr_repository-frontend-name                 
+
     build-ipfs:
         runs-on: ubuntu-22.04
 
         steps:
-            - uses: actions/setup-node@v2
-              with:
-                  node-version: "16"
+            # - uses: actions/setup-node@v2
+            #   with:
+            #       node-version: "16"
 
             - name: Checkout repository
               uses: actions/checkout@v2
