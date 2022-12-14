@@ -181,14 +181,27 @@ jobs:
             id: download-task-definition
             run: |
               aws ecs describe-task-definition --task-definition $(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name) --query taskDefinition > task-definition.json
-              echo "CONTAINER_NAME=$(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name)" > $GITHUB_OUTPUT
+              
+
+          - name: Fill GITHUB_OUTPUT
+            id: artifacts
+            run: |
+              echo "aws_ecs_cluster-main-name=$(cat /tmp/aws_ecs_cluster-main-name/aws_ecs_cluster-main-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecs_service-ipfs-name=$(cat /tmp/aws_ecs_service-ipfs-name/aws_ecs_service-ipfs-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecr_repository-ipfs-name=$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecs_task_definition-ipfs-name=$(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name)" >> $GITHUB_OUTPUT
+              echo $GITHUB_OUTPUT
+
+          - name: Display GITHUB_OUTPUT
+            run: |
+              echo ${{ steps.artifacts.outputs.aws_ecs_task_definition-ipfs-name }}
 
           - name: Replace image tag in task definition
             id: fillin-task-definition
             uses: aws-actions/amazon-ecs-render-task-definition@v1
             with:
               task-definition: task-definition.json
-              container-name: ${{ steps.download-task-definition.outputs.CONTAINER_NAME }}
+              container-name: ${{ steps.artifacts.outputs.aws_ecs_task_definition-ipfs-name }}
               image: ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):${{ env.IPFS_IMAGE_TAG }}
 
           - name: Deploying task definition
