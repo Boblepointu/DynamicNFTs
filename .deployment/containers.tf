@@ -194,8 +194,12 @@ resource "aws_ecs_task_definition" "ipfs" {
       essential         = true
       portMappings      = [
         {
-          containerPort = 5001
-          hostPort      = 5001
+          containerPort = 80
+          hostPort      = 80
+        },
+        {
+          containerPort = 4001
+          hostPort      = 4001
         }
       ]
       logConfiguration  = {
