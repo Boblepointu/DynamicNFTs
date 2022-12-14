@@ -114,7 +114,7 @@ resource "aws_ecs_service" "ipfs" {
   }
 
   network_configuration {
-    subnets          = data.aws_subnets.main.ids
+    subnets          = data.aws_subnets.main.ids# [ data.aws_subnets.main.ids[2] ]
     assign_public_ip = true
     security_groups  = [ aws_security_group.ecs-ipfs.id ]
   }
@@ -189,14 +189,14 @@ resource "aws_iam_policy" "ipfs-secrets" {
             "elasticfilesystem:ClientWrite"
           ],
           Effect    = "Allow",
-          Resource  = aws_efs_file_system.ipfs.arn
-          Condition = {
-              "ForAnyValue:StringEquals" = {
-                  "elasticfilesystem:AccessPointArn" = [
-                      aws_efs_access_point.ipfs-0.arn
-                  ]
-              }
-          }          
+          Resource  = "*"
+          # Condition = {
+          #     "ForAnyValue:StringEquals" = {
+          #         "elasticfilesystem:AccessPointArn" = [
+          #             aws_efs_access_point.ipfs-0.arn
+          #         ]
+          #     }
+          # }          
         }
       ]
   })  
