@@ -63,6 +63,7 @@ jobs:
 
     build-ipfs:
         runs-on: ubuntu-22.04
+        needs: deploy-infra
 
         steps:
             # - uses: actions/setup-node@v2
