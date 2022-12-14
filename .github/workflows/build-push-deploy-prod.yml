@@ -166,7 +166,6 @@ jobs:
               name: aws_ecs_cluster-main-name
               path: /tmp/aws_ecs_cluster-main-name
 
-
           - name: Configure AWS credentials
             uses: aws-actions/configure-aws-credentials@v1-node16
             with:
