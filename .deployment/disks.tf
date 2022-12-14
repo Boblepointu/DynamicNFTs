@@ -9,9 +9,18 @@ resource "aws_efs_file_system" "ipfs" {
 
 resource "aws_efs_access_point" "ipfs-0" {
   file_system_id = aws_efs_file_system.ipfs.id
+  posix_user {
+    gid = 1000
+    uid = 1000
+  }
   
   root_directory {
     path = "/ipfs-0"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = 0777
+    }
   }
 }
 

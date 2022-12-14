@@ -188,9 +188,16 @@ resource "aws_iam_policy" "ipfs-secrets" {
             "elasticfilesystem:ClientMount",
             "elasticfilesystem:ClientWrite"
           ],
-          Effect   = "Allow",
-          Resource = aws_efs_file_system.ipfs.arn
-        }   
+          Effect    = "Allow",
+          Resource  = aws_efs_file_system.ipfs.arn
+          Condition = {
+              "ForAnyValue:StringEquals" = {
+                  "elasticfilesystem:AccessPointArn" = [
+                      aws_efs_access_point.ipfs-0.arn
+                  ]
+              }
+          }          
+        }
       ]
   })  
 }
@@ -282,11 +289,12 @@ resource "aws_ecs_task_definition" "ipfs" {
         {
           containerPort = 80
           hostPort      = 80
-        },
-        {
-          containerPort = 4001
-          hostPort      = 4001
         }
+        # ,
+        # {
+        #   containerPort = 4001
+        #   hostPort      = 4001
+        # }
       ]
       logConfiguration  = {
         logDriver       = "awslogs"
