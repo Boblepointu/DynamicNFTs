@@ -154,13 +154,52 @@ data "aws_iam_policy_document" "ecs_tasks_execution_role" {
   }
 }
 
-resource "aws_iam_role" "ecs_tasks_execution_role" {
-  name               = "ecs-task-execution-role-${var.environment}"
+# IPFS task
+resource "aws_iam_policy" "ipfs-secrets" {
+  name   = "${var.project_name}-ipfs-secrets-${var.environment}"
+  policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action = [
+            "secretsmanager:GetSecretValue"
+          ]
+          Effect   = "Allow"
+          Resource = aws_secretsmanager_secret.ipfs-login.arn
+        },{
+          Action = [
+            "secretsmanager:GetSecretValue"
+          ]
+          Effect   = "Allow"
+          Resource = aws_secretsmanager_secret.ipfs-password.arn
+        }
+      ]
+  })  
+}
+
+resource "aws_iam_role" "ecs_ipfs_tasks_execution_role" {
+  name               = "${var.project_name}-ipfs-${var.environment}"
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_tasks_execution_role" {
-  role       = aws_iam_role.ecs_tasks_execution_role.name
+resource "aws_iam_role_policy_attachment" "ecs_ipfs_tasks_default" {
+  role       = aws_iam_role.ecs_ipfs_tasks_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_ipfs_tasks_secrets" {
+  role       = aws_iam_role.ecs_ipfs_tasks_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# Frontend task
+resource "aws_iam_role" "ecs_frontend_tasks_execution_role" {
+  name               = "${var.project_name}-frontend-${var.environment}"
+  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_frontend_tasks_default" {
+  role       = aws_iam_role.ecs_frontend_tasks_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
@@ -174,7 +213,7 @@ resource "aws_ecs_task_definition" "frontend" {
   network_mode             = "awsvpc"
   cpu                      = var.task_definition_configs.frontend.cpu
   memory                   = var.task_definition_configs.frontend.memory
-  execution_role_arn       = aws_iam_role.ecs_tasks_execution_role.arn
+  execution_role_arn       = aws_iam_role.ecs_frontend_tasks_execution_role.arn
   container_definitions = jsonencode([
     {
       name              = "${var.project_name}-frontend-${var.environment}"
@@ -216,8 +255,8 @@ resource "aws_ecs_task_definition" "ipfs" {
   network_mode             = "awsvpc"
   cpu                      = var.task_definition_configs.ipfs.cpu
   memory                   = var.task_definition_configs.ipfs.memory
-  execution_role_arn       = aws_iam_role.ecs_tasks_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_tasks_execution_role.arn
+  execution_role_arn       = aws_iam_role.ecs_ipfs_tasks_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_ipfs_tasks_execution_role.arn
   container_definitions = jsonencode([
     {
       name              = "${var.project_name}-ipfs-${var.environment}"
