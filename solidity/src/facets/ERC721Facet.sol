@@ -11,6 +11,14 @@ contract ERC721Facet is NFTokenMetadataEnumerableMock, DiamondLoupeSubFacet {
     */
     uint256 private nextTokenId = 0;
 
+    function lol() public pure returns (string memory) {
+        return 'LOL';
+    }
+
+    function lollol() public pure returns (string memory) {
+        return 'LOL';
+    }
+
     /**
     * @dev Init supported interfaces
     */

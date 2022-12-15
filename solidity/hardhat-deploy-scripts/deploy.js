@@ -2,6 +2,7 @@
 /* eslint prefer-const: "off" */
 
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
+const { CONTRACT_NAME, CONTRACT_SYMBOL } = process.env
 
 async function deployDiamond () {
   const accounts = await ethers.getSigners()
@@ -61,6 +62,23 @@ async function deployDiamond () {
     throw Error(`Diamond upgrade failed: ${tx.hash}`)
   }
   console.log('Completed diamond cut')
+
+  console.log(`Executing extra func to init at address ${diamond.address}`)
+  const facet = await ethers.getContractAt('ERC721Facet', diamond.address)
+
+  // initting diamond
+  await facet.transferOwnership(contractOwner.address)
+  console.log(`Setted diamond owner to ${contractOwner.address}`)
+  await facet.setNameAndSymbol(CONTRACT_NAME, CONTRACT_SYMBOL)
+  console.log(`Setted diamond name to ${CONTRACT_NAME} and symbol to ${CONTRACT_SYMBOL}`)
+  await facet.initSupportedInterfaces()
+  console.log(`Initted supported interfaces to ERC721Metadata, ERC721Enumerable and ERC721`)
+
+  for(let i = 0; i < 15; i++){
+    await facet.mintWeather(contractOwner.address)
+    console.log(`Minted a new nft, tokenId ${i}, for ${contractOwner.address}`)
+  }
+
   return diamond.address
 }
 
