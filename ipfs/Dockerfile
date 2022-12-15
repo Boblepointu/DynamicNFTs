@@ -13,6 +13,7 @@ RUN cd go-ipfs && bash install.sh
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 3000
+EXPOSE 3001
 
 CMD htpasswd -bc /.htpasswd $LOGIN $PASSWORD && \
     ./usr/sbin/nginx && \
