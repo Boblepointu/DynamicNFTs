@@ -4,20 +4,19 @@ pragma solidity ^0.8.0;
 import { LibDiamond } from  "../libraries/LibDiamond.sol";
 import "./erc721/mocks/nf-token-metadata-enumerable-mock.sol";
 import "./DiamondLoupeSubFacet.sol";
+import "./erc721/tokens/erc721.sol";
+import "./erc721/tokens/erc721-enumerable.sol";
+import "../interfaces/IERC165.sol";
+import "../interfaces/IERC173.sol";
 
 contract ERC721Facet is NFTokenMetadataEnumerableMock, DiamondLoupeSubFacet {
     /**
     * @dev The latest tokenId minted
     */
     uint256 private nextTokenId = 0;
-
-    function lol() public pure returns (string memory) {
-        return 'LOL';
-    }
-
-    function lollol() public pure returns (string memory) {
-        return 'LOL';
-    }
+    string private snowflakeUri;
+    string private cloudUri;
+    string private sunUri;
 
     /**
     * @dev Init supported interfaces
@@ -25,10 +24,28 @@ contract ERC721Facet is NFTokenMetadataEnumerableMock, DiamondLoupeSubFacet {
     function initSupportedInterfaces() external onlyOwner
     {
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
-        ds.supportedInterfaces[0x80ac58cd] = true; // ERC721
-        ds.supportedInterfaces[0x780e9d63] = true; // ERC721Enumerable
-        ds.supportedInterfaces[0x5b5e139f] = true; // ERC721Metadata
+        ds.supportedInterfaces[type(ERC721).interfaceId] = true; // ERC721
+        ds.supportedInterfaces[type(ERC721Enumerable).interfaceId] = true; // ERC721Enumerable
+        ds.supportedInterfaces[type(ERC721Metadata).interfaceId] = true; // ERC721Metadata
+        ds.supportedInterfaces[type(IERC165).interfaceId] = true; // ERC165 SupportInterface
+        ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true; // EIP2535 DiamondLoup
+        ds.supportedInterfaces[type(IERC173).interfaceId] = true; // ERC173 Ownable
     }
+
+    /**
+    * @dev Init differents nft states, to link them to their metadata
+    */
+    function initStateUris(
+        string calldata _snowflakeUri, 
+        string calldata _cloudUri, 
+        string calldata _sunUri
+    ) external onlyOwner
+    {
+        snowflakeUri = _snowflakeUri;
+        cloudUri = _cloudUri;
+        sunUri = _sunUri;
+    }
+
 
     /**
     * @dev Allow the current owner to mint a new weather NFT.
