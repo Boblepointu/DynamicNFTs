@@ -252,7 +252,7 @@ jobs:
             run: |
               echo "aws_route53_record-ipfs-admin=$(cat /tmp/aws_route53_record-ipfs-admin/aws_route53_record-ipfs-admin)" >> $GITHUB_OUTPUT
 
-          - name: Install global npm packages
+          - name: Install npm packages and execute uploadNftsToIpfs yarn script
             env:
                 IPFS_LOGIN: ${{ secrets.ADMIN_IPFS_LOGIN }}
                 IPFS_PASSWORD: ${{ secrets.ADMIN_IPFS_PASSWORD }}
