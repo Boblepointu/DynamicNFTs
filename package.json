@@ -1,9 +1,10 @@
 {
   "dependencies": {
     "axios": "^1.2.1",
-    "form-data": "^4.0.0"
+    "form-data": "^4.0.0",
+    "hardhat": "^2.12.4"
   },
   "scripts": {
     "uploadNftsToIpfs": "node scripts/uploadNftsToIpfs.js"
-  }  
+  }
 }

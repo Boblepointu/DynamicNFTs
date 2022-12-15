@@ -2,6 +2,15 @@
 src = 'src'
 out = 'out'
 libs = ['lib']
-eth-rpc-url = "https://goerli.optimism.io"
-
+#eth-rpc-url = "https://rpc.ankr.com/eth_goerli"
+eth-rpc-url = "http://127.0.0.1:8545"
+gas_limit = 9223372036854775807
+gas_price = 0
+block_gas_limit = 5500000000000000
+gas_reports = ['*']
+gas_reports_ignore = ['*']
+evm_version = 'london'
+optimizer = true
+optimizer_runs = 200
+chain_id = 5
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
