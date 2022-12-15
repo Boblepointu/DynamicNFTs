@@ -1,7 +1,7 @@
 
 /* global ethers task */
 require('@nomiclabs/hardhat-waffle')
-
+const Conf = require('./conf')
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task('accounts', 'Prints the list of accounts', async () => {
@@ -21,12 +21,12 @@ task('accounts', 'Prints the list of accounts', async () => {
 // 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
 module.exports = {
   solidity: '0.8.13',
-  defaultNetwork: "anvil",
+  defaultNetwork: "default",
   networks: {
     hardhat: {},
-    anvil: {
-      url: "http://127.0.0.1:8545",
-      accounts: [ '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80' ]
+    default: {
+      url: Conf.rpcAddress,
+      accounts: [ Conf.deployerPrivateKey ]
     }
   },
   paths: {

@@ -1,0 +1,4 @@
+{
+    "deployerPrivateKey": "0xabcd"
+    , "rpcAddress": "http://127.0.0.1:8545"
+}
