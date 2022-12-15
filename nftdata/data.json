@@ -1,0 +1,22 @@
+{
+    "weather": {
+        "snowflake": {
+            "name": "Weather NFT - Snowy"
+            , "description": "Temperatures are less or equal to 0°C"
+            , "image": "snowflake.png"
+            , "background_color": "1bd4de"
+        }
+        , "cloud": {
+            "name": "Weather NFT - Cloudy"
+            , "description": "Temperatures are more than 0°C and less or equal to 2°C"
+            , "image": "cloud.png"
+            , "background_color": "898f8f"
+        }
+        , "sun": {
+            "name": "Weather NFT - Sunny"
+            , "description": "Temperatures are more than 2°C"
+            , "image": "sun.png"
+            , "background_color": "898f8f"
+        }
+    }
+}
