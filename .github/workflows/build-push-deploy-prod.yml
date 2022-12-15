@@ -267,3 +267,19 @@ jobs:
             with:
               name: generated_nft_cids
               path: ${{ env.PROJECT_NAME }}/nftdata/generated
+
+    install-run-foundry:
+        runs-on: ubuntu-22.04
+        needs: generate-and-upload-nfts-to-ipfs
+
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v3
+            with:
+                ref: ${{ github.ref_name }}
+                path: ${{ env.PROJECT_NAME }}
+
+          - name: Install Foundry
+            uses: foundry-rs/foundry-toolchain@v1
+            with:
+              version: nightly
