@@ -20,7 +20,7 @@ jobs:
               uses: actions/checkout@v3
               with:
                   ref: ${{ github.ref_name }}
-                  path: dynamic-nfts
+                  path: ${{ env.PROJECT_NAME }}
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1-node16
@@ -35,7 +35,7 @@ jobs:
 
             - name: Terraform Init
               run: |
-                  terraform -chdir=dynamic-nfts/.deployment init -backend-config="key=${{ env.PROJECT_NAME }}/prod"
+                  terraform -chdir=${{ env.PROJECT_NAME }}/.deployment init -backend-config="key=${{ env.PROJECT_NAME }}/prod"
 
             - name: Terraform apply
               env:
@@ -43,20 +43,20 @@ jobs:
                 TF_VAR_environment: ${{ env.ENVIRONMENT }}
                 TF_VAR_ipfs_login: ${{ secrets.ADMIN_IPFS_LOGIN }}
                 TF_VAR_ipfs_password: ${{ secrets.ADMIN_IPFS_PASSWORD }}
-              run: terraform -chdir=dynamic-nfts/.deployment apply -var-file="variables.tfvars" -auto-approve
+              run: terraform -chdir=${{ env.PROJECT_NAME }}/.deployment apply -var-file="variables.tfvars" -auto-approve
 
             - name: Recover Terraform outputs
               run: | 
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-ipfs-name 
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecr_repository-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-frontend-name
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecs_task_definition-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-frontend-name
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecs_task_definition-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-ipfs-name
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecs_service-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-ipfs-name
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecs_service-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-frontend-name
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecs_cluster-main-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_cluster-main-name
-                terraform -chdir=dynamic-nfts/.deployment output aws_route53_record-frontend | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-frontend
-                terraform -chdir=dynamic-nfts/.deployment output aws_route53_record-ipfs | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs
-                terraform -chdir=dynamic-nfts/.deployment output aws_route53_record-ipfs-admin | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs-admin
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecr_repository-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-ipfs-name 
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecr_repository-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-frontend-name
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_task_definition-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-frontend-name
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_task_definition-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-ipfs-name
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_service-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-ipfs-name
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_service-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-frontend-name
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_cluster-main-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_cluster-main-name
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-frontend | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-frontend
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-ipfs | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-ipfs-admin | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs-admin
 
             - name: Upload artifact aws_ecr_repository-ipfs-name
               uses: actions/upload-artifact@v3
@@ -235,43 +235,23 @@ jobs:
         needs: deploy-ipfs
 
         steps:
-          - name: Configure AWS credentials
-            uses: aws-actions/configure-aws-credentials@v1-node16
+          - name: Download artifact aws_route53_record-ipfs-admin
+            uses: actions/download-artifact@v3
             with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              aws-region: ${{ env.AWS_REGION }}
-
-          - name: Login to Amazon ECR
-            id: login-ecr
-            uses: aws-actions/amazon-ecr-login@v1              
-
-          - name: Download task definition
-            id: download-task-definition
-            run: |
-              aws ecs describe-task-definition --task-definition $(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name) --query taskDefinition > task-definition.json
-              
+              name: aws_route53_record-ipfs-admin
+              path: /tmp/aws_route53_record-ipfs-admin
 
           - name: Fill GITHUB_OUTPUT
             id: artifacts
             run: |
-              echo "aws_ecs_cluster-main-name=$(cat /tmp/aws_ecs_cluster-main-name/aws_ecs_cluster-main-name)" >> $GITHUB_OUTPUT
-              echo "aws_ecs_service-ipfs-name=$(cat /tmp/aws_ecs_service-ipfs-name/aws_ecs_service-ipfs-name)" >> $GITHUB_OUTPUT
-              echo "aws_ecr_repository-ipfs-name=$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name)" >> $GITHUB_OUTPUT
-              echo "aws_ecs_task_definition-ipfs-name=$(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name)" >> $GITHUB_OUTPUT
+              echo "aws_route53_record-ipfs-admin=$(cat /tmp/aws_route53_record-ipfs-admin/aws_route53_record-ipfs-admin)" >> $GITHUB_OUTPUT
 
-          - name: Replace image tag in task definition
-            id: fillin-task-definition
-            uses: aws-actions/amazon-ecs-render-task-definition@v1
-            with:
-              task-definition: task-definition.json
-              container-name: ${{ steps.artifacts.outputs.aws_ecs_task_definition-ipfs-name }}
-              image: ${{ steps.login-ecr.outputs.registry }}/${{ steps.artifacts.outputs.aws_ecr_repository-ipfs-name }}:${{ env.IPFS_IMAGE_TAG }}
-
-          - name: Deploying task definition
-            uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-            with:
-              task-definition: ${{ steps.fillin-task-definition.outputs.task-definition }}
-              service: ${{ steps.artifacts.outputs.aws_ecs_service-ipfs-name }}
-              cluster: ${{ steps.artifacts.outputs.aws_ecs_cluster-main-name }}
-              wait-for-service-stability: true
+          - name: Install global npm packages
+            env:
+                IPFS_LOGIN: ${{ secrets.ADMIN_IPFS_LOGIN }}
+                IPFS_PASSWORD: ${{ secrets.ADMIN_IPFS_PASSWORD }}
+                IPFS_ADMIN_HOST: ${{ steps.artifacts.outputs.aws_route53_record-ipfs-admin }}
+            run: |
+              cd ${{ env.PROJECT_NAME }}
+              yarn
+              yarn uploadNftsToIpfs
