@@ -7,3 +7,6 @@
 *.terraform.lock.*
 
 node_modules
+
+solidity/cache
+solidity/out
