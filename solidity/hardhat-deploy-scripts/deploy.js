@@ -2,7 +2,13 @@
 /* eslint prefer-const: "off" */
 
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
-const { CONTRACT_NAME, CONTRACT_SYMBOL } = process.env
+const { 
+  CONTRACT_NAME
+  , CONTRACT_SYMBOL
+  , SNOWFLAKE_URI
+  , CLOUD_URI
+  , SUN_URI 
+} = process.env
 
 async function deployDiamond () {
   const accounts = await ethers.getSigners()
@@ -71,6 +77,8 @@ async function deployDiamond () {
   console.log(`Setted diamond owner to ${contractOwner.address}`)
   await facet.setNameAndSymbol(CONTRACT_NAME, CONTRACT_SYMBOL)
   console.log(`Setted diamond name to ${CONTRACT_NAME} and symbol to ${CONTRACT_SYMBOL}`)
+  await facet.initStateUris(SNOWFLAKE_URI, CLOUD_URI, SUN_URI)
+  console.log(`Setted nft states to snowflake = ${SNOWFLAKE_URI}, cloud = ${CLOUD_URI}, sun = ${SUN_URI}`)
   await facet.initSupportedInterfaces()
   console.log(`Initted supported interfaces to ERC721Metadata, ERC721Enumerable and ERC721`)
 
