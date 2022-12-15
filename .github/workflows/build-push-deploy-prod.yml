@@ -261,3 +261,9 @@ jobs:
               cd ${{ env.PROJECT_NAME }}
               yarn
               yarn uploadNftsToIpfs
+
+          - name: Upload artifact generated_nft_cids
+            uses: actions/upload-artifact@v3
+            with:
+              name: generated_nft_cids
+              path: ${{ env.PROJECT_NAME }}/nftdata/generated
