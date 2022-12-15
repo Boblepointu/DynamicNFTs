@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "../tokens/nf-token-metadata.sol";
 import "../tokens/nf-token-enumerable.sol";
 import "../ownership/ownable.sol";
-import "../utils/supports-interface.sol";
+// import "../utils/supports-interface.sol";
 
 /**
  * @dev This is an example contract implementation of NFToken with enumerable and metadata
@@ -13,8 +13,7 @@ import "../utils/supports-interface.sol";
 contract NFTokenMetadataEnumerableMock is
   NFTokenEnumerable,
   NFTokenMetadata,
-  Ownable,
-  SupportsInterface
+  Ownable
 {
     /**
    * @dev Removes a NFT from owner.

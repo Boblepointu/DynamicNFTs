@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../contracts/tokens/nf-token-enumerable.sol";
+import "../../erc721/tokens/nf-token-enumerable.sol";
 import "../ownership/ownable.sol";
 
 /**

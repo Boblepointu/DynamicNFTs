@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
+import { LibDiamond } from  "../libraries/LibDiamond.sol";
 import "./erc721/mocks/nf-token-metadata-enumerable-mock.sol";
+import "./DiamondLoupeSubFacet.sol";
 
-contract ERC721Facet is NFTokenMetadataEnumerableMock {
+contract ERC721Facet is NFTokenMetadataEnumerableMock, DiamondLoupeSubFacet {
     /**
     * @dev The latest tokenId minted
     */
@@ -14,9 +16,10 @@ contract ERC721Facet is NFTokenMetadataEnumerableMock {
     */
     function initSupportedInterfaces() external onlyOwner
     {
-        supportedInterfaces[0x80ac58cd] = true; // ERC721
-        supportedInterfaces[0x780e9d63] = true; // ERC721Enumerable
-        supportedInterfaces[0x5b5e139f] = true; // ERC721Metadata
+        LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
+        ds.supportedInterfaces[0x80ac58cd] = true; // ERC721
+        ds.supportedInterfaces[0x780e9d63] = true; // ERC721Enumerable
+        ds.supportedInterfaces[0x5b5e139f] = true; // ERC721Metadata
     }
 
     /**
