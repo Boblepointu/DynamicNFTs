@@ -17,7 +17,7 @@ EXPOSE 3001
 
 CMD htpasswd -bc /.htpasswd $LOGIN $PASSWORD && \
     ./usr/sbin/nginx && \
-    ipfs init || true && \
+    ipfs init --profile server || true && \
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]' && \
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST"]' && \
     ipfs daemon
