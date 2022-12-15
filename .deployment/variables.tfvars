@@ -19,9 +19,9 @@ lb_dns_record_ipfs_admin = "dynamic-nfts-gateway-admin.frenchbtc.fr"
 ########################
 
 # Custom env name, can be anything. AWS resources name will include that.
-environment              = "prod"
+# environment              = "prod"
 # Custom project name, can be anything. AWS resources name will include that.
-project_name             = "dynamic-nfts"
+# project_name             = "dynamic-nfts"
 # ECS task definitions. How powerful we want the ECS pods.
 task_definition_configs  = {
   frontend = {
@@ -36,5 +36,5 @@ task_definition_configs  = {
   }
 }
 # The login/password to access admin port on the IPFS ECS task
-ipfs_login               = "admin"
-ipfs_password            = "123123abcabc***"
+# ipfs_login               = "admin"
+# ipfs_password            = "123123abcabc***"
