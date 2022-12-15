@@ -65,12 +65,12 @@ const main = async () => {
         console.log(`Got buffer for "${currKey}" image, of size ${fileBuffer.length} bytes.`)
         console.log(`Sending file to IPFS.`)
         const CIDImage = await sendToIpfs(fileBuffer, currImageFileName, 'image/png')
-        console.log(`Replacing file name in metadata by CID ${CIDImage}.`)
+        console.log(`Replacing file name in metadata of "${currKey}" by CID ${CIDImage}.`)
         currMeta.image = `ipfs://${CIDImage}`
-        console.log(`Sending stringified metadata to IPFS.`)
+        console.log(`Sending stringified metadata of "${currKey}" to IPFS.`)
         const metadataBuffer = Buffer.from(JSON.stringify(currMeta))
         const CIDMetadata = await sendToIpfs(metadataBuffer, 'metadata.json', 'application/json')
-        console.log(`${currKey} NFT metadata IPFS link is ipfs://${CIDMetadata}`)
+        console.log(`NFT metadata of "${currKey}" IPFS link is ipfs://${CIDMetadata}`)
         generatedJson[currKey] = `ipfs://${CIDMetadata}`
     }
 
