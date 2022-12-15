@@ -24,7 +24,7 @@ const sendToIpfs = async (fileBuffer, filename, contentType) => {
     return data.Hash
 }
 
-const filepathToBuffer = (path)=> {
+const filepathToBuffer = path => {
     return new Promise((resolve, reject) => {
         Fs.readFile(path, (err, data) => {
             if (err) {
