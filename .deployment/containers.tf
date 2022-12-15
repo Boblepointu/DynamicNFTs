@@ -299,11 +299,18 @@ resource "aws_ecs_task_definition" "ipfs" {
         {
           containerPort = 3000
           hostPort      = 3000
+          protocol      = "tcp"
         },
         {
           containerPort = 3001
           hostPort      = 3001
-        }
+          protocol      = "tcp"
+        },
+        {
+          containerPort = 4001
+          hostPort      = 4001
+          protocol      = "udp"
+        }        
       ]
       logConfiguration  = {
         logDriver       = "awslogs"
