@@ -68,6 +68,10 @@ resource "aws_route53_record" "frontend" {
   records = [ aws_lb.frontend.dns_name ]
 }
 
+output "aws_route53_record-frontend" {
+  value = var.lb_dns_record_frontend
+}
+
 resource "aws_route53_record" "ipfs" {
   zone_id = data.aws_route53_zone.frenchbtc-fr.zone_id
   name    = var.lb_dns_record_ipfs
@@ -76,10 +80,18 @@ resource "aws_route53_record" "ipfs" {
   records = [ aws_lb.ipfs.dns_name ]
 }
 
+output "aws_route53_record-ipfs" {
+  value = var.lb_dns_record_ipfs
+}
+
 resource "aws_route53_record" "ipfs-admin" {
   zone_id = data.aws_route53_zone.frenchbtc-fr.zone_id
   name    = var.lb_dns_record_ipfs_admin
   type    = "CNAME"
   ttl     = "10"
   records = [ aws_lb.ipfs-admin.dns_name ]
+}
+
+output "aws_route53_record-ipfs-admin" {
+  value = var.lb_dns_record_ipfs_admin
 }

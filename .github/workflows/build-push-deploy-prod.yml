@@ -52,50 +52,71 @@ jobs:
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecs_task_definition-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-frontend-name
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecs_task_definition-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-ipfs-name
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecs_service-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-ipfs-name
-                terraform -chdir=dynamic-nfts/.deployment output aws_ecs_cluster-main-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-frontend-name
+                terraform -chdir=dynamic-nfts/.deployment output aws_ecs_service-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-frontend-name
                 terraform -chdir=dynamic-nfts/.deployment output aws_ecs_cluster-main-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_cluster-main-name
+                terraform -chdir=dynamic-nfts/.deployment output aws_route53_record-frontend | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-frontend
+                terraform -chdir=dynamic-nfts/.deployment output aws_route53_record-ipfs | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs
+                terraform -chdir=dynamic-nfts/.deployment output aws_route53_record-ipfs-admin | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs-admin
 
-            - name: Upload artifact
+            - name: Upload artifact aws_ecr_repository-ipfs-name
               uses: actions/upload-artifact@v3
               with:
                 name: aws_ecr_repository-ipfs-name
                 path: aws_ecr_repository-ipfs-name
 
-            - name: Upload artifact
+            - name: Upload artifact aws_ecr_repository-frontend-name
               uses: actions/upload-artifact@v3
               with:
                 name: aws_ecr_repository-frontend-name
                 path: aws_ecr_repository-frontend-name
 
-            - name: Upload artifact
+            - name: Upload artifact aws_ecs_task_definition-ipfs-name
               uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_task_definition-ipfs-name
                 path: aws_ecs_task_definition-ipfs-name
 
-            - name: Upload artifact
+            - name: Upload artifact aws_ecs_task_definition-frontend-name
               uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_task_definition-frontend-name
                 path: aws_ecs_task_definition-frontend-name
 
-            - name: Upload artifact
+            - name: Upload artifact aws_ecs_service-ipfs-name
               uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_service-ipfs-name
                 path: aws_ecs_service-ipfs-name
 
-            - name: Upload artifact
+            - name: Upload artifact aws_ecs_service-frontend-name
               uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_service-frontend-name
                 path: aws_ecs_service-frontend-name
 
-            - name: Upload artifact
+            - name: Upload artifact aws_ecs_cluster-main-name
               uses: actions/upload-artifact@v3
               with:
                 name: aws_ecs_cluster-main-name
                 path: aws_ecs_cluster-main-name
+
+            - name: Upload artifact aws_route53_record-frontend
+              uses: actions/upload-artifact@v3
+              with:
+                name: aws_route53_record-frontend
+                path: aws_route53_record-frontend
+
+            - name: Upload artifact aws_route53_record-ipfs
+              uses: actions/upload-artifact@v3
+              with:
+                name: aws_route53_record-ipfs
+                path: aws_route53_record-ipfs
+
+            - name: Upload artifact aws_route53_record-ipfs-admin
+              uses: actions/upload-artifact@v3
+              with:
+                name: aws_route53_record-ipfs-admin
+                path: aws_route53_record-ipfs-admin                                
 
     build-ipfs:
         runs-on: ubuntu-22.04
@@ -144,30 +165,76 @@ jobs:
         needs: build-ipfs
 
         steps:
-          - name: Download artifact
+          - name: Download artifact aws_ecs_task_definition-ipfs-name
             uses: actions/download-artifact@v3
             with:
               name: aws_ecs_task_definition-ipfs-name
               path: /tmp/aws_ecs_task_definition-ipfs-name
 
-          - name: Download artifact
+          - name: Download artifact aws_ecr_repository-ipfs-name
             uses: actions/download-artifact@v3
             with:
               name: aws_ecr_repository-ipfs-name
               path: /tmp/aws_ecr_repository-ipfs-name
 
-          - name: Download artifact
+          - name: Download artifact aws_ecs_service-ipfs-name
             uses: actions/download-artifact@v3
             with:
               name: aws_ecs_service-ipfs-name
               path: /tmp/aws_ecs_service-ipfs-name
 
-          - name: Download artifact
+          - name: Download artifact aws_ecs_cluster-main-name
             uses: actions/download-artifact@v3
             with:
               name: aws_ecs_cluster-main-name
               path: /tmp/aws_ecs_cluster-main-name
 
+          - name: Configure AWS credentials
+            uses: aws-actions/configure-aws-credentials@v1-node16
+            with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: ${{ env.AWS_REGION }}
+
+          - name: Login to Amazon ECR
+            id: login-ecr
+            uses: aws-actions/amazon-ecr-login@v1              
+
+          - name: Download task definition
+            id: download-task-definition
+            run: |
+              aws ecs describe-task-definition --task-definition $(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name) --query taskDefinition > task-definition.json
+              
+
+          - name: Fill GITHUB_OUTPUT
+            id: artifacts
+            run: |
+              echo "aws_ecs_cluster-main-name=$(cat /tmp/aws_ecs_cluster-main-name/aws_ecs_cluster-main-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecs_service-ipfs-name=$(cat /tmp/aws_ecs_service-ipfs-name/aws_ecs_service-ipfs-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecr_repository-ipfs-name=$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecs_task_definition-ipfs-name=$(cat /tmp/aws_ecs_task_definition-ipfs-name/aws_ecs_task_definition-ipfs-name)" >> $GITHUB_OUTPUT
+
+          - name: Replace image tag in task definition
+            id: fillin-task-definition
+            uses: aws-actions/amazon-ecs-render-task-definition@v1
+            with:
+              task-definition: task-definition.json
+              container-name: ${{ steps.artifacts.outputs.aws_ecs_task_definition-ipfs-name }}
+              image: ${{ steps.login-ecr.outputs.registry }}/${{ steps.artifacts.outputs.aws_ecr_repository-ipfs-name }}:${{ env.IPFS_IMAGE_TAG }}
+
+          - name: Deploying task definition
+            uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+            with:
+              task-definition: ${{ steps.fillin-task-definition.outputs.task-definition }}
+              service: ${{ steps.artifacts.outputs.aws_ecs_service-ipfs-name }}
+              cluster: ${{ steps.artifacts.outputs.aws_ecs_cluster-main-name }}
+              wait-for-service-stability: true
+
+    generate-and-upload-nfts-to-ipfs:
+        runs-on: ubuntu-22.04
+        needs: deploy-ipfs
+
+        steps:
           - name: Configure AWS credentials
             uses: aws-actions/configure-aws-credentials@v1-node16
             with:
