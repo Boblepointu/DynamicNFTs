@@ -4,6 +4,10 @@ const main = async () => {
     const app = Express()
     const port = 3000
     
+    app.get('/healthcheck', (req, res) => {
+      res.sendStatus(200)
+    })
+
     app.get('/', (req, res) => {
       console.log('Received a query for temperature !')
       res.send('3')
