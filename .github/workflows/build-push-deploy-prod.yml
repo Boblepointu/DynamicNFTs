@@ -48,7 +48,9 @@ jobs:
             - name: Recover Terraform outputs
               run: | 
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecr_repository-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-ipfs-name 
+                cat aws_ecr_repository-ipfs-name > $GITHUB_STEP_SUMMARY
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecr_repository-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-frontend-name
+                cat aws_ecr_repository-frontend-name > $GITHUB_STEP_SUMMARY
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecr_repository-backend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-backend-name
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_task_definition-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-frontend-name
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_task_definition-backend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-backend-name
@@ -61,7 +63,7 @@ jobs:
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-backend | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-backend
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-ipfs | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-ipfs-admin | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs-admin
-
+                
             - name: Upload artifact aws_ecr_repository-ipfs-name
               uses: actions/upload-artifact@v3
               with:
@@ -409,7 +411,6 @@ jobs:
               path: ${{ env.PROJECT_NAME }}/nftdata/generated
 
     compile-and-deploy-contracts:
-        if: github.repository == 'octo-org/octo-repo-prod'
         runs-on: ubuntu-22.04
         needs: 
           - generate-and-upload-nfts-to-ipfs
