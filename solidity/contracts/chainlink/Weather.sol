@@ -47,6 +47,10 @@ contract Weather is ChainlinkClient {
         serverUrl = _serverUrl;
     }
 
+    function getAvgTemp() public view returns(uint256){
+        return avgTemp;
+    }
+
     function requestAvgTemp() public {
         Chainlink.Request memory req = buildChainlinkRequest(
             '7da2702f37fd48e5b1b9a5715e3509b6'
@@ -54,6 +58,7 @@ contract Weather is ChainlinkClient {
             , this.fulfillAvgTemp.selector
         );
         req.add('get', serverUrl);
+        req.add("path", "avgTemp");
         req.addInt('times', 1);
         sendChainlinkRequest(req, fee);
     }
