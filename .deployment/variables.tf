@@ -42,6 +42,11 @@ variable "lb_dns_record_ipfs_admin" {
   description = "AWS route53 record domain name for ALB"
 }
 
+variable "lb_dns_record_backend" {
+  type        = string
+  description = "AWS route53 record domain name for ALB"
+}
+
 # variable "lb_dns_record_chainlink" {
 #   type        = string
 #   description = "AWS route53 record domain name for ALB"

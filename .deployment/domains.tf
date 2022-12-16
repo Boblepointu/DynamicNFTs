@@ -114,6 +114,17 @@ output "aws_route53_record-ipfs-admin" {
   value = var.lb_dns_record_ipfs_admin
 }
 
+resource "aws_route53_record" "backend" {
+  zone_id = data.aws_route53_zone.frenchbtc-fr.zone_id
+  name    = var.lb_dns_record_ipfs_admin
+  type    = "CNAME"
+  ttl     = "10"
+  records = [ aws_lb.backend.dns_name ]
+}
+
+output "aws_route53_record-backend" {
+  value = var.lb_dns_record_ipfs_admin
+}
 # resource "aws_route53_record" "chainlink" {
 #   zone_id = data.aws_route53_zone.frenchbtc-fr.zone_id
 #   name    = var.lb_dns_record_chainlink

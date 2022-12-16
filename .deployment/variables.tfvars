@@ -13,6 +13,7 @@ dns_zone_name            = "frenchbtc.fr."
 lb_dns_record_frontend   = "dynamic-nfts.frenchbtc.fr"
 lb_dns_record_ipfs       = "dynamic-nfts-gateway.frenchbtc.fr"
 lb_dns_record_ipfs_admin = "dynamic-nfts-gateway-admin.frenchbtc.fr"
+lb_dns_record_backend    = "dynamic-nfts-gateway-backend.frenchbtc.fr"
 # lb_dns_record_chainlink  = "dynamic-nfts-chainlink.frenchbtc.fr"
 
 ########################
@@ -30,6 +31,11 @@ task_definition_configs  = {
     cpu               = 512
     soft_memory_limit = 1000
   }
+  backend = {
+    memory            = 1024
+    cpu               = 512
+    soft_memory_limit = 1000
+  }
   ipfs = {
     memory            = 4096
     cpu               = 2048
@@ -41,6 +47,7 @@ task_definition_configs  = {
   #   soft_memory_limit = 2020
   # }
 }
+
 # The login/password to access admin port on the IPFS ECS task
 ipfs_login               = "admin"
 ipfs_password            = "123123abcabc***"

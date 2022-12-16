@@ -65,6 +65,10 @@ resource "aws_cloudwatch_log_group" "ipfs" {
   name = "/ecs/${var.project_name}-ipfs-${var.environment}"
 }
 
+resource "aws_cloudwatch_log_group" "backend" {
+  name = "/ecs/${var.project_name}-backend-${var.environment}"
+}
+
 # resource "aws_cloudwatch_log_group" "chainlink" {
 #   name = "/ecs/${var.project_name}-chainlink-${var.environment}"
 # }
@@ -163,6 +167,50 @@ resource "aws_ecs_service" "ipfs" {
 
 output "aws_ecs_service-ipfs-name" {
   value = "${var.project_name}-ipfs-${var.environment}"
+}
+
+resource "aws_ecs_service" "backend" {
+  name            = "${var.project_name}-backend-${var.environment}"
+  cluster         = aws_ecs_cluster.main.arn
+  task_definition = aws_ecs_task_definition.backend.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  health_check_grace_period_seconds = 5
+
+  deployment_maximum_percent = 100
+  deployment_minimum_healthy_percent = 0
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.backend.arn
+    container_name   = "${var.project_name}-backend-${var.environment}"
+    container_port   = 3000
+  }
+
+  network_configuration {
+    subnets          = data.aws_subnets.main.ids
+    assign_public_ip = true
+    security_groups  = [ aws_security_group.ecs-backend.id ]
+  }
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
+  lifecycle {
+    ignore_changes = [
+      task_definition
+    ]
+  }
+
+  depends_on = [
+    aws_lb_listener.backend-https
+  ]
+}
+
+output "aws_ecs_service-backend-name" {
+  value = "${var.project_name}-backend-${var.environment}"
 }
 
 # resource "aws_ecs_service" "chainlink" {
@@ -286,6 +334,17 @@ resource "aws_iam_role" "ecs_frontend_tasks_execution_role" {
 
 resource "aws_iam_role_policy_attachment" "ecs_frontend_tasks_default" {
   role       = aws_iam_role.ecs_frontend_tasks_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# Backend task
+resource "aws_iam_role" "ecs_backend_tasks_execution_role" {
+  name               = "${var.project_name}-backend-${var.environment}"
+  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_backend_tasks_default" {
+  role       = aws_iam_role.ecs_backend_tasks_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
@@ -428,6 +487,67 @@ resource "aws_ecs_task_definition" "ipfs" {
 
 output "aws_ecs_task_definition-ipfs-name" {
   value = aws_ecs_task_definition.ipfs.family
+}
+
+resource "aws_ecs_task_definition" "backend" {
+  family                   = "${var.project_name}-backend-${var.environment}"
+  requires_compatibilities = [ "FARGATE" ]
+  network_mode             = "awsvpc"
+  cpu                      = var.task_definition_configs.backend.cpu
+  memory                   = var.task_definition_configs.backend.memory
+  execution_role_arn       = aws_iam_role.ecs_backend_tasks_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_backend_tasks_execution_role.arn
+  container_definitions = jsonencode([
+    {
+      name              = "${var.project_name}-backend-${var.environment}"
+      image             = "rebelthor/sleep"
+      cpu               = var.task_definition_configs.backend.cpu
+      memory            = var.task_definition_configs.backend.memory
+      memoryReservation = var.task_definition_configs.backend.soft_memory_limit
+      essential         = true
+      portMappings      = [
+        {
+          containerPort = 3000
+          hostPort      = 3000
+          protocol      = "tcp"
+        }       
+      ]
+      logConfiguration  = {
+        logDriver       = "awslogs"
+        secretOptions   = null
+        options         = {
+          awslogs-group         = aws_cloudwatch_log_group.backend.name
+          awslogs-region        = data.aws_region.main.name
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+      # mountPoints = [
+      #   {
+      #     readOnly        = null,
+      #     containerPath   = "/root/.backend",
+      #     sourceVolume    = "backend-storage"
+      #   }
+      # ]
+      # secrets = [
+      #   {
+      #     name      = "LOGIN",
+      #     valueFrom = aws_secretsmanager_secret.backend-login.arn
+      #   },
+      #   {
+      #     name      = "PASSWORD",
+      #     valueFrom = aws_secretsmanager_secret.backend-password.arn
+      #   }
+      # ]           
+    }
+  ])
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+  }
+}
+
+output "aws_ecs_task_definition-backend-name" {
+  value = aws_ecs_task_definition.backend.family
 }
 
 # resource "aws_ecs_task_definition" "chainlink" {
