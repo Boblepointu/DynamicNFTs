@@ -89,6 +89,12 @@ jobs:
                 name: aws_ecs_task_definition-frontend-name
                 path: aws_ecs_task_definition-frontend-name
 
+            - name: Upload artifact aws_ecs_task_definition-backend-name
+              uses: actions/upload-artifact@v3
+              with:
+                name: aws_ecs_task_definition-backend-name
+                path: aws_ecs_task_definition-backend-name
+
             - name: Upload artifact aws_ecs_service-ipfs-name
               uses: actions/upload-artifact@v3
               with:
