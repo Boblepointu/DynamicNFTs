@@ -5,6 +5,7 @@ const main = async () => {
     const port = 3000
     
     app.get('/', (req, res) => {
+      console.log('Received a query for temperature !')
       res.send('3')
     })
     

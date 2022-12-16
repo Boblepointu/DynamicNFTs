@@ -23,7 +23,7 @@ resource "aws_acm_certificate_validation" "ipfs-admin" {
 resource "aws_acm_certificate_validation" "backend" {
   provider                = aws
   certificate_arn         = aws_acm_certificate.backend.arn
-  validation_record_fqdns = [ for record in aws_route53_record.validation_ipfs_admin : record.fqdn ]
+  validation_record_fqdns = [ for record in aws_route53_record.validation_backend : record.fqdn ]
 }
 
 # resource "aws_acm_certificate_validation" "chainlink" {

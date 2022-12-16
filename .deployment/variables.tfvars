@@ -13,7 +13,7 @@ dns_zone_name            = "frenchbtc.fr."
 lb_dns_record_frontend   = "dynamic-nfts.frenchbtc.fr"
 lb_dns_record_ipfs       = "dynamic-nfts-gateway.frenchbtc.fr"
 lb_dns_record_ipfs_admin = "dynamic-nfts-gateway-admin.frenchbtc.fr"
-lb_dns_record_backend    = "dynamic-nfts-gateway-backend.frenchbtc.fr"
+lb_dns_record_backend    = "dynamic-nfts-backend.frenchbtc.fr"
 # lb_dns_record_chainlink  = "dynamic-nfts-chainlink.frenchbtc.fr"
 
 ########################
