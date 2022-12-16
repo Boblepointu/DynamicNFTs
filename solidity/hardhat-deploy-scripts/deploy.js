@@ -8,6 +8,10 @@ const {
   , SNOWFLAKE_URI
   , CLOUD_URI
   , SUN_URI 
+  , LINK_CONTRACT_ADDRESS 
+  , ORACLE_CONTRACT_ADDRESS 
+  , AVG_TMP_JOB_ID 
+  , LINK_FEE
 } = process.env
 
 async function deployDiamond () {
@@ -81,6 +85,11 @@ async function deployDiamond () {
   console.log(`Setted nft states to snowflake = ${SNOWFLAKE_URI}, cloud = ${CLOUD_URI}, sun = ${SUN_URI}`)
   await facet.initSupportedInterfaces()
   console.log(`Initted supported interfaces to ERC721Metadata, ERC721Enumerable and ERC721`)
+  await facet.initChainLinkClient(LINK_CONTRACT_ADDRESS, ORACLE_CONTRACT_ADDRESS, AVG_TMP_JOB_ID, LINK_FEE)
+  console.log(`Initted chainlink client with link address ${LINK_CONTRACT_ADDRESS}, oracle address ${ORACLE_CONTRACT_ADDRESS}, jobid ${AVG_TMP_JOB_ID}, and a fixed fee of ${LINK_FEE} `)
+  await facet.requestAvgTemp('2022-12-15', '2022-12-15')
+  console.log(`Requested temperature for today ${LINK_CONTRACT_ADDRESS}, oracle address ${ORACLE_CONTRACT_ADDRESS}, jobid ${AVG_TMP_JOB_ID}, and a fixed fee of ${LINK_FEE} `)
+  
 
   for(let i = 0; i < 15; i++){
     await facet.mintWeather(contractOwner.address)

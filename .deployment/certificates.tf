@@ -20,6 +20,12 @@ resource "aws_acm_certificate_validation" "ipfs-admin" {
   validation_record_fqdns = [ for record in aws_route53_record.validation_ipfs_admin : record.fqdn ]
 }
 
+# resource "aws_acm_certificate_validation" "chainlink" {
+#   provider                = aws
+#   certificate_arn         = aws_acm_certificate.chainlink.arn
+#   validation_record_fqdns = [ for record in aws_route53_record.validation_chainlink : record.fqdn ]
+# }
+
 ###############################
 #### Certificate frontend #####
 ###############################
@@ -57,3 +63,17 @@ resource "aws_acm_certificate" "ipfs-admin" {
     create_before_destroy = true
   }
 }
+
+###############################
+#### Certificate chainlink ####
+###############################
+
+# resource "aws_acm_certificate" "chainlink" {
+#   provider                  = aws
+#   domain_name               = var.lb_dns_record_chainlink
+#   subject_alternative_names = [ "*.${var.lb_dns_record_chainlink}" ]
+#   validation_method         = "DNS"
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }

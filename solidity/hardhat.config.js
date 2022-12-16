@@ -20,7 +20,28 @@ task('accounts', 'Prints the list of accounts', async () => {
  */
 // 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
 module.exports = {
-  solidity: '0.8.13',
+  solidity: {
+    compilers: [
+      { 
+        version: "0.8.13"
+        , settings: {
+          optimizer: {
+            enabled: true,
+            runs: 10
+          }
+        }  
+      },
+      { 
+        version: "0.8.6"
+        , settings: {
+          optimizer: {
+            enabled: true,
+            runs: 10
+          }
+        } 
+      }
+    ],
+  },
   defaultNetwork: "default",
   networks: {
     hardhat: {},
@@ -38,7 +59,7 @@ module.exports = {
   settings: {
     optimizer: {
       enabled: true,
-      runs: 200
+      runs: 1
     }
   }
 }

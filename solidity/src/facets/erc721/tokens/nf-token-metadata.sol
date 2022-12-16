@@ -64,6 +64,7 @@ contract NFTokenMetadata is
     external
     override
     view
+    virtual
     validNFToken(_tokenId)
     returns (string memory)
   {

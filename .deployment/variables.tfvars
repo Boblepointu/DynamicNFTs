@@ -13,15 +13,16 @@ dns_zone_name            = "frenchbtc.fr."
 lb_dns_record_frontend   = "dynamic-nfts.frenchbtc.fr"
 lb_dns_record_ipfs       = "dynamic-nfts-gateway.frenchbtc.fr"
 lb_dns_record_ipfs_admin = "dynamic-nfts-gateway-admin.frenchbtc.fr"
+# lb_dns_record_chainlink  = "dynamic-nfts-chainlink.frenchbtc.fr"
 
 ########################
 ## User defined vars ###
 ########################
 
 # Custom env name, can be anything. AWS resources name will include that.
-# environment              = "prod"
+environment              = "prod"
 # Custom project name, can be anything. AWS resources name will include that.
-# project_name             = "dynamic-nfts"
+project_name             = "dynamic-nfts"
 # ECS task definitions. How powerful we want the ECS pods.
 task_definition_configs  = {
   frontend = {
@@ -34,7 +35,15 @@ task_definition_configs  = {
     cpu               = 2048
     soft_memory_limit = 4050
   }
+  # chainlink = {
+  #   memory            = 2048
+  #   cpu               = 1024
+  #   soft_memory_limit = 2020
+  # }
 }
 # The login/password to access admin port on the IPFS ECS task
-# ipfs_login               = "admin"
-# ipfs_password            = "123123abcabc***"
+ipfs_login               = "admin"
+ipfs_password            = "123123abcabc***"
+
+
+# db_password              = "123123abcabc***"

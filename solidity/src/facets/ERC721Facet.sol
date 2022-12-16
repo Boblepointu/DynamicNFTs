@@ -8,14 +8,31 @@ import "./erc721/tokens/erc721.sol";
 import "./erc721/tokens/erc721-enumerable.sol";
 import "../interfaces/IERC165.sol";
 import "../interfaces/IERC173.sol";
+import "../chainlink/Weather.sol";
 
-contract ERC721Facet is NFTokenMetadataEnumerableMock, DiamondLoupeSubFacet {
+contract ERC721Facet is 
+    NFTokenMetadataEnumerableMock, 
+    DiamondLoupeSubFacet,
+    Weather
+{
     /**
-    * @dev The latest tokenId minted
+    * @dev The next tokenId to be minted
     */
     uint256 private nextTokenId = 0;
+
+    /**
+    * @dev The tokenUri of the snowflake
+    */
     string private snowflakeUri;
+
+    /**
+    * @dev The tokenUri of the cloud
+    */  
     string private cloudUri;
+
+    /**
+    * @dev The tokenUri of the sun
+    */      
     string private sunUri;
 
     /**
@@ -56,7 +73,7 @@ contract ERC721Facet is NFTokenMetadataEnumerableMock, DiamondLoupeSubFacet {
     ) external onlyOwner
     {
         super._mint(_to, nextTokenId);
-        super._setTokenUri(nextTokenId, 'ipfs://QmV1yioxmzw9U9YqqmRdkyTTRpNZTDdZ4Ckbk5XYtr8DdK');
+        super._setTokenUri(nextTokenId, snowflakeUri);
         nextTokenId = nextTokenId + 1;
     }
 
@@ -87,5 +104,61 @@ contract ERC721Facet is NFTokenMetadataEnumerableMock, DiamondLoupeSubFacet {
     {
         nftName = _name;
         nftSymbol = _symbol;
+    }
+
+    /**
+    * @dev A distinct URI (RFC 3986) for a given NFT.
+    * @param _tokenId Id for which we want uri.
+    * @return URI of _tokenId.
+    */
+    function tokenURI(
+        uint256 _tokenId
+    )
+        external
+        override
+        view
+        validNFToken(_tokenId)
+        returns (string memory)
+    {
+        if(avgTemp <= 0){
+            return snowflakeUri;
+        }
+        else if(avgTemp > 0 && avgTemp <= 2){
+            return cloudUri;
+        }
+   
+        return sunUri;
+    }
+
+    /**
+    * @dev Override initChainLinkClient in Weather contract to control access.
+    * @param _link The link contract address.
+    * @param _oracle The oracle contract address.
+    * @param _avgTempJobId The average temperature job id.
+    * @param _fee The fee dedicated to the task.
+    */
+    function initChainLinkClient(        
+        address _link,
+        address _oracle,
+        string calldata _avgTempJobId,
+        uint256 _fee
+    ) external onlyOwner
+    {
+        _initChainLinkClient(_link, _oracle, stringToBytes32(_avgTempJobId), _fee);
+    }
+
+    /**
+    * @dev Convert a string to byte32.
+    * @param source The string to convert.
+    */
+    function stringToBytes32(string memory source) private pure returns (bytes32 result) {
+        bytes memory tempEmptyStringTest = bytes(source);
+        if (tempEmptyStringTest.length == 0) {
+        return 0x0;
+        }
+
+        assembly { // solhint-disable-line no-inline-assembly
+        result := mload(add(source, 32))
+        }
     }
 }

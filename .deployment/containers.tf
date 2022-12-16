@@ -40,6 +40,18 @@ output "aws_ecr_repository-ipfs-name" {
   value = aws_ecr_repository.ipfs.name
 }
 
+resource "aws_ecr_repository" "backend" {
+  name                 = "${var.project_name}-backend-${var.environment}"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+output "aws_ecr_repository-backend-name" {
+  value = aws_ecr_repository.backend.name
+}
 
 ########################
 #### Log groups ########
@@ -52,6 +64,10 @@ resource "aws_cloudwatch_log_group" "frontend" {
 resource "aws_cloudwatch_log_group" "ipfs" {
   name = "/ecs/${var.project_name}-ipfs-${var.environment}"
 }
+
+# resource "aws_cloudwatch_log_group" "chainlink" {
+#   name = "/ecs/${var.project_name}-chainlink-${var.environment}"
+# }
 
 ########################
 #### ECS services ######
@@ -149,6 +165,46 @@ output "aws_ecs_service-ipfs-name" {
   value = "${var.project_name}-ipfs-${var.environment}"
 }
 
+# resource "aws_ecs_service" "chainlink" {
+#   name            = "${var.project_name}-chainlink-${var.environment}"
+#   cluster         = aws_ecs_cluster.main.arn
+#   task_definition = aws_ecs_task_definition.chainlink.arn
+#   desired_count   = 1
+#   launch_type     = "FARGATE"
+
+#   health_check_grace_period_seconds = 5
+
+#   deployment_maximum_percent = 100
+#   deployment_minimum_healthy_percent = 0
+
+#   load_balancer {
+#     target_group_arn = aws_lb_target_group.chainlink.arn
+#     container_name   = "${var.project_name}-chainlink-${var.environment}"
+#     container_port   = 6688
+#   }
+  
+#   network_configuration {
+#     subnets          = data.aws_subnets.main.ids
+#     assign_public_ip = true
+#     security_groups  = [ aws_security_group.ecs-chainlink.id ]
+#   }
+
+#   deployment_circuit_breaker {
+#     enable   = true
+#     rollback = true
+#   }
+
+#   # lifecycle {
+#   #   ignore_changes = [
+#   #     task_definition
+#   #   ]
+#   # }
+# }
+
+# output "aws_ecs_service-chainlink-name" {
+#   value = "${var.project_name}-chainlink-${var.environment}"
+# }
+
 #####################################
 #### ECS roles and policies #########
 #####################################
@@ -232,6 +288,18 @@ resource "aws_iam_role_policy_attachment" "ecs_frontend_tasks_default" {
   role       = aws_iam_role.ecs_frontend_tasks_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
+
+# Chainlink task
+# resource "aws_iam_role" "ecs_chainlink_tasks_execution_role" {
+#   name               = "${var.project_name}-chainlink-${var.environment}"
+#   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
+# }
+
+# resource "aws_iam_role_policy_attachment" "ecs_chainlink_tasks_default" {
+#   role       = aws_iam_role.ecs_chainlink_tasks_execution_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+# }
+
 
 ########################
 #### ECS tasks #########
@@ -361,3 +429,61 @@ resource "aws_ecs_task_definition" "ipfs" {
 output "aws_ecs_task_definition-ipfs-name" {
   value = aws_ecs_task_definition.ipfs.family
 }
+
+# resource "aws_ecs_task_definition" "chainlink" {
+#   family                   = "${var.project_name}-chainlink-${var.environment}"
+#   requires_compatibilities = [ "FARGATE" ]
+#   network_mode             = "awsvpc"
+#   cpu                      = var.task_definition_configs.chainlink.cpu
+#   memory                   = var.task_definition_configs.chainlink.memory
+#   execution_role_arn       = aws_iam_role.ecs_chainlink_tasks_execution_role.arn
+#   task_role_arn            = aws_iam_role.ecs_chainlink_tasks_execution_role.arn
+#   container_definitions = jsonencode([
+#     {
+#       name              = "${var.project_name}-chainlink-${var.environment}"
+#       image             = "smartcontract/chainlink:1.11.0"
+#       cpu               = var.task_definition_configs.chainlink.cpu
+#       memory            = var.task_definition_configs.chainlink.memory
+#       memoryReservation = var.task_definition_configs.chainlink.soft_memory_limit
+#       essential         = true
+#       logConfiguration  = {
+#         logDriver       = "awslogs"
+#         secretOptions   = null
+#         options         = {
+#           awslogs-group         = aws_cloudwatch_log_group.chainlink.name
+#           awslogs-region        = data.aws_region.main.name
+#           awslogs-stream-prefix = "ecs"
+#         }
+#       }
+
+#       environment       = [
+#         {"name": "CHAINLINK_DEV", "value": "true"}
+#         , {"name": "CHAINLINK_TLS_PORT", "value": "0"}
+#         , {"name": "SECURE_COOKIES", "value": "false"}
+#       ]
+
+#       portMappings      = [
+#         {
+#           containerPort = 6688
+#           hostPort      = 6688
+#           protocol      = "tcp"
+#         }
+#       ]
+
+#       secrets = [
+#         {
+#           name      = "DATABASE_URL",
+#           valueFrom = aws_secretsmanager_secret.chainlink-database-url.arn
+#         }
+#       ]           
+#     }
+#   ])
+
+#   runtime_platform {
+#     operating_system_family = "LINUX"
+#   }
+# }
+
+# output "aws_ecs_task_definition-chainlink-name" {
+#   value = aws_ecs_task_definition.chainlink.family
+# }
