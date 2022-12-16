@@ -23,21 +23,21 @@ module.exports = async (deployer) => {
 
   console.log(`Deploying DiamondCutFacet`)
   await deployer.deploy(DiamondCutFacet)
-  console.log(DiamondCutFacet)
-  console.log(DiamondCutFacet._json)
-  console.log(DiamondCutFacet._json.abi[0])
+  // console.log(DiamondCutFacet)
+  // console.log(DiamondCutFacet._json)
+  // console.log(DiamondCutFacet._json.abi[0])
   console.log(`DiamondCutFacet deployed: ${DiamondCutFacet.address}`)
 
   console.log(`Deploying Diamond`)
   await deployer.deploy(Diamond, accounts[0], DiamondCutFacet.address)
-  console.log(Diamond)
-  console.log(accounts[0], DiamondCutFacet.address)
+  // console.log(Diamond)
+  // console.log(accounts[0], DiamondCutFacet.address)
   console.log(`Diamond deployed: ${Diamond.address}`)
 
   console.log(`Deploying DiamondInit`)
   await deployer.deploy(DiamondInit)
-  console.log(DiamondInit)
-  console.log(accounts[0], DiamondInit.address)
+  // console.log(DiamondInit)
+  // console.log(accounts[0], DiamondInit.address)
   console.log(`DiamondInit deployed: ${DiamondInit.address}`)
 
   console.log(`Deploying Facets`)
@@ -66,11 +66,11 @@ module.exports = async (deployer) => {
     console.log(`Generated ${facetFucntionsSignatures.length} function signatures to include to Diamond !`)
   }
 
-  console.log(cut)
+  // console.log(cut)
   const DiamondInitInstance = new web3.eth.Contract(DiamondInit._json.abi, DiamondInit.address)
   const encodedInitFunctionCall = DiamondInitInstance.methods.init().encodeABI()
   console.log(`Got back encoded init function call.`)
-  console.log(encodedInitFunctionCall)
+  // console.log(encodedInitFunctionCall)
   
   console.log(`Calling diamondCut func with encoded init and cut array.`)
   const DiamondCutFacetInstance = await DiamondCutFacet.at(Diamond.address)//new web3.eth.Contract(DiamondCutFacet._json.abi, DiamondCutFacet.address)
