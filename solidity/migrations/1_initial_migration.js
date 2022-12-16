@@ -5,6 +5,7 @@ const ERC721Facet = artifacts.require('ERC721Facet')
 const Diamond = artifacts.require('Diamond')
 const DiamondInit = artifacts.require('DiamondInit')
 const IERC20 = artifacts.require('IERC20')
+const Weather = artifacts.require('Weather')
 
 const { 
   CONTRACT_NAME
@@ -12,6 +13,7 @@ const {
   , SNOWFLAKE_URI
   , CLOUD_URI
   , SUN_URI
+  , CONTRACT_URI
   , LINK_CONTRACT_ADDRESS
   , ORACLE_CONTRACT_ADDRESS
   , SERVER_URL
@@ -20,6 +22,10 @@ const {
 
 module.exports = async (deployer) => {
   const accounts = await web3.eth.getAccounts()
+
+  console.log(`Deploying Weather`)
+  await deployer.deploy(Weather, LINK_CONTRACT_ADDRESS, ORACLE_CONTRACT_ADDRESS, SERVER_URL, LINK_FEE)
+  console.log(`Initted chainlink client with link address ${LINK_CONTRACT_ADDRESS}, oracle address ${ORACLE_CONTRACT_ADDRESS}, and a fixed fee of ${LINK_FEE} `)
 
   console.log(`Deploying DiamondCutFacet`)
   await deployer.deploy(DiamondCutFacet)
@@ -80,26 +86,29 @@ module.exports = async (deployer) => {
 
   // Sending some LINK to Diamond
   const linkToken = await IERC20.at(LINK_CONTRACT_ADDRESS)
-  await linkToken.transfer(Diamond.address, "1000000000000000000")
-  console.log(`Sent 1 LINK to Diamond !`)
+  await linkToken.transfer(Weather.address, "1000000000000000000")
+  console.log(`Sent 1 LINK to Weather !`)
 
   const ERC721FacetInstance = await ERC721Facet.at(Diamond.address)//new web3.eth.Contract(ERC721Facet._json.abi, Diamond.address)
+  const WeatherInstance = await Weather.at(Weather.address)//new web3.eth.Contract(ERC721Facet._json.abi, Diamond.address)
 
   // initting diamond
   await ERC721FacetInstance.transferOwnership(accounts[0])
   console.log(`Setted diamond owner to ${accounts[0]}`)
+  await ERC721FacetInstance.setWeatherContract(Weather.address)
+  console.log(`Setted diamond weather address to ${Weather.address}`)
   await ERC721FacetInstance.setNameAndSymbol(CONTRACT_NAME, CONTRACT_SYMBOL)
   console.log(`Setted diamond name to ${CONTRACT_NAME} and symbol to ${CONTRACT_SYMBOL}`)
   await ERC721FacetInstance.initStateUris(SNOWFLAKE_URI, CLOUD_URI, SUN_URI)
   console.log(`Setted nft states to snowflake = ${SNOWFLAKE_URI}, cloud = ${CLOUD_URI}, sun = ${SUN_URI}`)
+  await ERC721FacetInstance.setContractUri(CONTRACT_URI)
+  console.log(`Setted contract URI to ${CONTRACT_URI}`)
   await ERC721FacetInstance.initSupportedInterfaces()
   console.log(`Initted supported interfaces to ERC721Metadata, ERC721Enumerable and ERC721`)
-  await ERC721FacetInstance.initChainLinkClient(LINK_CONTRACT_ADDRESS, ORACLE_CONTRACT_ADDRESS, SERVER_URL, LINK_FEE)
-  console.log(`Initted chainlink client with link address ${LINK_CONTRACT_ADDRESS}, oracle address ${ORACLE_CONTRACT_ADDRESS}, and a fixed fee of ${LINK_FEE} `)
-  await ERC721FacetInstance.requestAvgTemp()
+  await WeatherInstance.requestAvgTemp()
   console.log(`Requested temperature for today ${LINK_CONTRACT_ADDRESS}, oracle address ${ORACLE_CONTRACT_ADDRESS}, and a fixed fee of ${LINK_FEE} `)
   
 
-  await ERC721FacetInstance.mintWeather(accounts[0])
-  console.log(`Minted a new nft, for ${accounts[0]}`)
+  // await ERC721FacetInstance.mintWeather(accounts[0])
+  // console.log(`Minted a new nft, for ${accounts[0]}`)
 }
