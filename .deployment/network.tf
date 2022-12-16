@@ -309,6 +309,10 @@ resource "aws_lb_target_group" "frontend" {
     timeout           = 3
     path              = "/healthcheck"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb" "ipfs" {
@@ -421,6 +425,10 @@ resource "aws_lb_target_group" "ipfs-admin" {
     timeout           = 3
     path              = "/healthcheck"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }  
 }
 
 resource "aws_lb" "backend" {
@@ -476,6 +484,10 @@ resource "aws_lb_target_group" "backend" {
     interval          = 5
     timeout           = 3
     path              = "/healthcheck"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
