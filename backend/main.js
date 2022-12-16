@@ -13,7 +13,7 @@ const main = async () => {
       console.log(`Received a query for temperature from ${ip} !`)
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify({
-        avgTemp: 985
+        avgTemp: 1020
       }))
     })
     
