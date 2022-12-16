@@ -409,6 +409,7 @@ jobs:
               path: ${{ env.PROJECT_NAME }}/nftdata/generated
 
     compile-and-deploy-contracts:
+        if: github.repository == 'octo-org/octo-repo-prod'
         runs-on: ubuntu-22.04
         needs: 
           - generate-and-upload-nfts-to-ipfs
@@ -441,8 +442,10 @@ jobs:
               echo "sun_uri=$(jq -r '.sun' /tmp/generated_nft_cids/nftCids.json )" >> $GITHUB_OUTPUT
               echo "contract_uri=$(jq -r '.contract' /tmp/generated_nft_cids/nftCids.json )" >> $GITHUB_OUTPUT
               echo "aws_route53_record-backend=$(cat /tmp/aws_route53_record-backend/aws_route53_record-backend)" >> $GITHUB_OUTPUT            
+              echo "contract_deployment_switch=$(cat ${{ env.PROJECT_NAME }}/contract_deployment_switch)" >> $GITHUB_OUTPUT            
 
           - name: Deploy contract
+            if: ${{ steps.artifacts.outputs.contract_deployment_switch }} == 1
             env:
               CONTRACT_NAME: ${{ secrets.CONTRACT_NAME }}
               CONTRACT_SYMBOL: ${{ secrets.CONTRACT_SYMBOL }}
