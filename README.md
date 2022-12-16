@@ -2,17 +2,17 @@
 A simple all rounds implementation of dynamic NFTs collection, from infra to front.
 
 # Requirements
-	- An AWS account
-	- A Route53 zone registered in the AWS account
-	- A S3 bucket
-	- An Ethereum VM private key (dedicated to the management of these contracts) :
+	- An AWS account (AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY)
+	- A Route53 zone registered in the AWS account (dns_zone_name)
+	- A S3 bucket (bucket)
+	- An Ethereum VM private key (dedicated to the management of these contracts) (PRIVATE_KEY): 
 		- with some test ETH (at least 0.15 for Goerli)
 		- with some LINK (at least 5-10 for Goerli)
-	- A RPC URL for the network you will be executing for
-	- The network id for that network
-	- The address of the LINK oracle contract / operator on that network
-	- The address of the LINK token contract on that network
-	- The fee needed to run the oracle / operator (testnets, 0.1 LINK (100000000000000000), mainnets, 1 LINK (1000000000000000000))
+	- A RPC URL for the network you will be executing for (RPC_URL)
+	- The network id for that network (NETWORK_ID)
+	- The address of the LINK oracle contract / operator on that network (ORACLE_CONTRACT_ADDRESS)
+	- The address of the LINK token contract on that network (LINK_CONTRACT_ADDRESS)
+	- The fee needed to run the oracle / operator (testnets, 0.1 LINK (100000000000000000), mainnets, 1 LINK (1000000000000000000)) (RPC_URL)
 
 # Setting up CI variables
 
