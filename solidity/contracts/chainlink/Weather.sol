@@ -10,10 +10,6 @@ import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 
 contract Weather is ChainlinkClient {
     using Chainlink for Chainlink.Request;
-    /**
-    * @dev The last job id for average temperature
-    */
-    bytes32 public avgTempJobId;
 
     /**
     * @dev The last recorded average temperature
@@ -26,6 +22,11 @@ contract Weather is ChainlinkClient {
     uint256 public fee;
 
     /**
+    * @dev The average temperature
+    */    
+    string public serverUrl;
+
+    /**
     * @dev The event to emit each time a temperature is recovered
     */
     event AvgTemp(uint256 _result);
@@ -36,28 +37,40 @@ contract Weather is ChainlinkClient {
     function _initChainLinkClient(        
         address _link,
         address _oracle,
-        bytes32 _avgTempJobId,
+        string calldata _serverUrl,
         uint256 _fee
     ) internal
     {
         setChainlinkToken(_link);
         setChainlinkOracle(_oracle);
-        avgTempJobId = _avgTempJobId;
         fee = _fee;
+        serverUrl = _serverUrl;
     }
-    
-    function requestAvgTemp(string memory _from, string memory _to) external {
+
+    function requestAvgTemp() public {
         Chainlink.Request memory req = buildChainlinkRequest(
-            avgTempJobId,
-            address(this),
-            this.fulfillAvgTemp.selector
+            '7da2702f37fd48e5b1b9a5715e3509b6'
+            , address(this)
+            , this.fulfillAvgTemp.selector
         );
-        req.add("dateFrom", _from);
-        req.add("dateTo", _to);
-        req.add("method", "AVG");
-        req.add("column", "temp");
+        req.add('get', serverUrl);
+        req.addInt('times', 1);
         sendChainlinkRequest(req, fee);
     }
+
+    // function requestAvgTemp(string memory _from, string memory _to) external {
+        
+    //     Chainlink.Request memory req = buildChainlinkRequest(
+    //         avgTempJobId,
+    //         address(this),
+    //         this.fulfillAvgTemp.selector
+    //     );
+    //     req.add("dateFrom", _from);
+    //     req.add("dateTo", _to);
+    //     req.add("method", "AVG");
+    //     req.add("column", "temp");
+    //     sendChainlinkRequest(req, fee);
+    // }
 
     function fulfillAvgTemp(
         bytes32 _requestId,

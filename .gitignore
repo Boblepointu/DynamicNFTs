@@ -12,5 +12,6 @@ solidity/cache
 solidity/out
 solidity/conf.json
 solidity/build
+solidity/truffle-config.js
 
 _backup

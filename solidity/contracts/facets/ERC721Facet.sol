@@ -134,17 +134,17 @@ contract ERC721Facet is
     * @dev Override initChainLinkClient in Weather contract to control access.
     * @param _link The link contract address.
     * @param _oracle The oracle contract address.
-    * @param _avgTempJobId The average temperature job id.
+    * @param _serverUrl The HTTP url to get the data.
     * @param _fee The fee dedicated to the task.
     */
     function initChainLinkClient(        
         address _link,
         address _oracle,
-        string calldata _avgTempJobId,
+        string calldata _serverUrl,
         uint256 _fee
     ) external onlyOwner
     {
-        _initChainLinkClient(_link, _oracle, stringToBytes32(_avgTempJobId), _fee);
+        _initChainLinkClient(_link, _oracle, _serverUrl, _fee);
     }
 
     /**
