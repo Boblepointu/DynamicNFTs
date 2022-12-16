@@ -11,3 +11,6 @@ node_modules
 solidity/cache
 solidity/out
 solidity/conf.json
+solidity/build
+
+_backup
