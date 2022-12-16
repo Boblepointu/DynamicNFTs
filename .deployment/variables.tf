@@ -70,7 +70,7 @@ variable "ipfs_password" {
   type        = string
   description = "The password to access IPFS admin port"
 }
-variable "db_password" {
-  type        = string
-  description = "The password to access pg database"
-}
+# variable "db_password" {
+#   type        = string
+#   description = "The password to access pg database"
+# }

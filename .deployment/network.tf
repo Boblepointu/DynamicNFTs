@@ -364,14 +364,14 @@ resource "aws_lb_target_group" "ipfs-admin" {
   }
 }
 
-resource "aws_lb" "chainlink" {
-  name               = "${var.project_name}-chainlink-${var.environment}"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [ aws_security_group.lb-chainlink.id ]
+# resource "aws_lb" "chainlink" {
+#   name               = "${var.project_name}-chainlink-${var.environment}"
+#   internal           = false
+#   load_balancer_type = "application"
+#   security_groups    = [ aws_security_group.lb-chainlink.id ]
 
-  subnets            = data.aws_subnets.main.ids
-}
+#   subnets            = data.aws_subnets.main.ids
+# }
 
 # resource "aws_lb_listener" "chainlink-http" {
 #   load_balancer_arn = aws_lb.chainlink.arn
