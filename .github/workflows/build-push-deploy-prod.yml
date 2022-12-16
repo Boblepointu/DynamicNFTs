@@ -107,6 +107,12 @@ jobs:
                 name: aws_ecs_service-frontend-name
                 path: aws_ecs_service-frontend-name
 
+            - name: Upload artifact aws_ecs_service-backend-name
+              uses: actions/upload-artifact@v3
+              with:
+                name: aws_ecs_service-backend-name
+                path: aws_ecs_service-backend-name
+
             - name: Upload artifact aws_ecs_cluster-main-name
               uses: actions/upload-artifact@v3
               with:
@@ -118,6 +124,12 @@ jobs:
               with:
                 name: aws_route53_record-frontend
                 path: aws_route53_record-frontend
+
+            - name: Upload artifact aws_route53_record-backend
+              uses: actions/upload-artifact@v3
+              with:
+                name: aws_route53_record-backend
+                path: aws_route53_record-backend                
 
             - name: Upload artifact aws_route53_record-ipfs
               uses: actions/upload-artifact@v3
