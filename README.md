@@ -45,3 +45,13 @@ Please define :
 	- lb_dns_record_backend (must be a subdomain of dns_zone_name, will be created automatically)
 
 And, at last, the S3 bucket that will hold the terraform state files, necessary for it to work, you will find it @ .deployment/variables.tf, at the top of the file. Define here "bucket" (must be created beforehand) and "region" which is the AWS region to operate.
+
+# Improvement possible
+
+    - Develop the code to upgrade the Diamond through the CI
+    - Allow multiple IPFS server to run concurrently
+    - Configure fully Github with protected branches; PR prefill; PR restrictions; Github OWNERFILES
+    - Two environment, dev and prod (minor adjustement)
+    - Adding standard-version to manage versions in the package.json in parallel than in the github repository
+    - Plug the docker image tags in the ECR registry to the repository tag
+    - ...
