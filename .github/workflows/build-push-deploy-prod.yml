@@ -51,11 +51,14 @@ jobs:
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecr_repository-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-frontend-name
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecr_repository-backend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecr_repository-backend-name
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_task_definition-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-frontend-name
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_task_definition-backend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-backend-name
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_task_definition-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_task_definition-ipfs-name
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_service-ipfs-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-ipfs-name
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_service-frontend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-frontend-name
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_service-backend-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_service-backend-name
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_ecs_cluster-main-name | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_ecs_cluster-main-name
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-frontend | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-frontend
+                terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-backend | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-backend
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-ipfs | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs
                 terraform -chdir=${{ env.PROJECT_NAME }}/.deployment output aws_route53_record-ipfs-admin | grep -o '".*"' | sed 's/"//g' | head -n 1 > aws_route53_record-ipfs-admin
 
