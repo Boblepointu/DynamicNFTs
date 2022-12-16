@@ -281,6 +281,12 @@ resource "aws_lb_listener" "frontend-http" {
   }
 }
 
+resource "time_sleep" "wait-after-frontend-cert-creation" {
+  depends_on = [ aws_acm_certificate.frontend ]
+
+  create_duration = "60s"
+}
+
 resource "aws_lb_listener" "frontend-https" {
   load_balancer_arn = aws_lb.frontend.arn
 
@@ -293,6 +299,8 @@ resource "aws_lb_listener" "frontend-https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.frontend.arn
   }
+
+  depends_on = [ time_sleep.wait-after-frontend-cert-creation ]
 }
 
 resource "aws_lb_target_group" "frontend" {
@@ -340,6 +348,12 @@ resource "aws_lb_listener" "ipfs-http" {
   }
 }
 
+resource "time_sleep" "wait-after-ipfs-cert-creation" {
+  depends_on = [ aws_acm_certificate.ipfs ]
+
+  create_duration = "60s"
+}
+
 resource "aws_lb_listener" "ipfs-https" {
   load_balancer_arn = aws_lb.ipfs.arn
 
@@ -352,6 +366,8 @@ resource "aws_lb_listener" "ipfs-https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.ipfs.arn
   }
+
+  depends_on = [ time_sleep.wait-after-ipfs-cert-creation ]
 }
 
 resource "aws_lb_target_group" "ipfs" {
@@ -396,6 +412,12 @@ resource "aws_lb_listener" "ipfs-admin-http" {
   }
 }
 
+resource "time_sleep" "wait-after-ipfs-admin-cert-creation" {
+  depends_on = [ aws_acm_certificate.ipfs-admin ]
+
+  create_duration = "60s"
+}
+
 resource "aws_lb_listener" "ipfs-admin-https" {
   load_balancer_arn = aws_lb.ipfs-admin.arn
 
@@ -408,6 +430,8 @@ resource "aws_lb_listener" "ipfs-admin-https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.ipfs-admin.arn
   }
+
+  depends_on = [ time_sleep.wait-after-ipfs-admin-cert-creation ]
 }
 
 resource "aws_lb_target_group" "ipfs-admin" {
@@ -456,6 +480,12 @@ resource "aws_lb_listener" "backend-http" {
   }
 }
 
+resource "time_sleep" "wait-after-backend-cert-creation" {
+  depends_on = [ aws_acm_certificate.backend ]
+
+  create_duration = "60s"
+}
+
 resource "aws_lb_listener" "backend-https" {
   load_balancer_arn = aws_lb.backend.arn
 
@@ -468,6 +498,8 @@ resource "aws_lb_listener" "backend-https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.backend.arn
   }
+
+  depends_on = [ time_sleep.wait-after-backend-cert-creation ]
 }
 
 resource "aws_lb_target_group" "backend" {
