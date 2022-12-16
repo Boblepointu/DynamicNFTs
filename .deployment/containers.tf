@@ -178,8 +178,8 @@ resource "aws_ecs_service" "backend" {
 
   health_check_grace_period_seconds = 5
 
-  deployment_maximum_percent = 100
-  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent = 200
+  deployment_minimum_healthy_percent = 100
 
   load_balancer {
     target_group_arn = aws_lb_target_group.backend.arn
