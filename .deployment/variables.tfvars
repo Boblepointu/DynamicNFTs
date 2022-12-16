@@ -1,5 +1,5 @@
 ########################
-## Aws defined vars ####
+## User defined vars ####
 ########################
 
 # Global AWS account.
@@ -14,10 +14,6 @@ lb_dns_record_frontend   = "dynamic-nfts.frenchbtc.fr"
 lb_dns_record_ipfs       = "dynamic-nfts-gateway.frenchbtc.fr"
 lb_dns_record_ipfs_admin = "dynamic-nfts-gateway-admin.frenchbtc.fr"
 lb_dns_record_backend    = "dynamic-nfts-backend.frenchbtc.fr"
-
-########################
-## User defined vars ###
-########################
 
 # ECS task definitions. How powerful we want the ECS pods.
 task_definition_configs  = {
