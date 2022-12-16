@@ -54,4 +54,5 @@ And, at last, the S3 bucket that will hold the terraform state files, necessary 
     - Two environment, dev and prod (minor adjustement)
     - Adding standard-version to manage versions in the package.json in parallel than in the github repository
     - Plug the docker image tags in the ECR registry to the repository tag
+    - Fine grained AWS service account role / policies for all the actions performed by this repository
     - ...
