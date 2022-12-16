@@ -2,6 +2,7 @@
 A simple all rounds implementation of dynamic NFTs collection, from infra to front.
 
 # Requirements
+
 	- An AWS account (AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY)
 	- A Route53 zone registered in the AWS account (dns_zone_name)
 	- A S3 bucket (bucket)
@@ -18,6 +19,7 @@ A simple all rounds implementation of dynamic NFTs collection, from infra to fro
 
 To make the CI work, and for it to do all the job, you need to setup repository action secrets.
 The list is following :
+
               - PROJECT_NAME = whatever you want
               - ADMIN_IPFS_LOGIN = whatever you want
               - ADMIN_IPFS_PASSWORD = whatever you want
