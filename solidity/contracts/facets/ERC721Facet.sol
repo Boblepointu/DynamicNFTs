@@ -36,8 +36,13 @@ contract ERC721Facet is
 
     /**
     * @dev The tokenUri of the sun
-    */      
+    */
     string private sunUri;
+
+    /**
+    * @dev The contractUri
+    */
+    string private contractUri;
 
     /**
     * @dev Init supported interfaces
@@ -117,6 +122,25 @@ contract ERC721Facet is
     {
         nftName = _name;
         nftSymbol = _symbol;
+    }
+
+    /**
+    * @dev Allows the current owner change the name and symbol of the contract.
+    * @param _contractUri The contract metadata URI.
+    */
+    function setContractUri(
+        string calldata _contractUri
+    ) external onlyOwner
+    {
+        contractUri = _contractUri;
+    }    
+
+    /**
+    * @dev A distinct URI for the contract (https://docs.opensea.io/docs/contract-level-metadata).
+    * @return URI of the contract.
+    */
+    function contractURI() public view returns (string memory) {
+        return contractUri;
     }
 
     /**

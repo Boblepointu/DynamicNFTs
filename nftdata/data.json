@@ -18,5 +18,10 @@
             , "image": "sun.png"
             , "background_color": "898f8f"
         }
+        , "contract": {
+            "name": "Weather NFTs",
+            "description": "A collection a NFT moving with the average temperature in Paris !",
+            "image": "contract.png"
+          }      
     }
 }
