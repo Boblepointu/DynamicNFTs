@@ -11,10 +11,10 @@ const main = async () => {
     app.get('/', (req, res) => {
       const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
       console.log(`Received a query for temperature from ${ip} !`)
-      
-      res.json({
-        avgTemp: 3//'0x3000000000000000000000000000000000000000000000000000000000000000'
-      })
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({
+        avgTemp: 3
+      }))
     })
     
     app.listen(port, () => {
