@@ -15,3 +15,5 @@ solidity/build
 solidity/truffle-config.js
 
 _backup
+
+nftdata/generated/nftCids.json
