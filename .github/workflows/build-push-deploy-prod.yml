@@ -187,8 +187,7 @@ jobs:
               run: |
                 docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-backend-name/aws_ecr_repository-backend-name):${{ env.IMAGE_TAG }}
                 docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-backend-name/aws_ecr_repository-backend-name):latest
-     
-              
+           
     deploy-backend:
         runs-on: ubuntu-22.04
         needs: build-backend
@@ -300,7 +299,7 @@ jobs:
               run: |
                 docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):${{ env.IMAGE_TAG }}
                 docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-ipfs-name/aws_ecr_repository-ipfs-name):latest
-              
+
     deploy-ipfs:
         runs-on: ubuntu-22.04
         needs: build-ipfs
@@ -409,9 +408,11 @@ jobs:
               name: generated_nft_cids
               path: ${{ env.PROJECT_NAME }}/nftdata/generated
 
-    install-run-foundry:
+    compile-and-deploy-contracts:
         runs-on: ubuntu-22.04
-        needs: generate-and-upload-nfts-to-ipfs
+        needs: 
+          - generate-and-upload-nfts-to-ipfs
+          - deploy-backend
 
         steps:
           - name: Checkout repository
@@ -420,7 +421,12 @@ jobs:
                 ref: ${{ github.ref_name }}
                 path: ${{ env.PROJECT_NAME }}
 
-          - name: Install Foundry
-            uses: foundry-rs/foundry-toolchain@v1
-            with:
-              version: nightly
+          - name: Install dependencies
+            run: |
+              cd ${{ env.PROJECT_NAME }}/solidity
+              yarn
+
+          - name: Install dependencies
+            run: |
+              cd ${{ env.PROJECT_NAME }}/solidity
+              npx truffle migrate --reset
