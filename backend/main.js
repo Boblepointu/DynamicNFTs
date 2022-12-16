@@ -10,7 +10,7 @@ const main = async () => {
 
     app.get('/', (req, res) => {
       console.log('Received a query for temperature !')
-      res.sendJson({
+      res.json({
         avgTemp: 3//'0x3000000000000000000000000000000000000000000000000000000000000000'
       })
     })
