@@ -464,13 +464,13 @@ resource "aws_lb_listener" "backend-https" {
 
 resource "aws_lb_target_group" "backend" {
   name                 = "${var.project_name}-backend-${var.environment}"
-  port                 = 3001
+  port                 = 3000
   protocol             = "HTTP"
   target_type          = "ip"
   vpc_id               = data.aws_vpc.main.id
   deregistration_delay = 5
   health_check {
-    port              = 3001   
+    port              = 3000   
     enabled           = true
     healthy_threshold = 2
     interval          = 5
