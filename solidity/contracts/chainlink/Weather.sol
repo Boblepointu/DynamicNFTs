@@ -58,20 +58,6 @@ contract Weather is ChainlinkClient {
         sendChainlinkRequest(req, fee);
     }
 
-    // function requestAvgTemp(string memory _from, string memory _to) external {
-        
-    //     Chainlink.Request memory req = buildChainlinkRequest(
-    //         avgTempJobId,
-    //         address(this),
-    //         this.fulfillAvgTemp.selector
-    //     );
-    //     req.add("dateFrom", _from);
-    //     req.add("dateTo", _to);
-    //     req.add("method", "AVG");
-    //     req.add("column", "temp");
-    //     sendChainlinkRequest(req, fee);
-    // }
-
     function fulfillAvgTemp(
         bytes32 _requestId,
         uint256 _result
