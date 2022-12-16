@@ -9,7 +9,9 @@ const main = async () => {
     })
 
     app.get('/', (req, res) => {
-      console.log('Received a query for temperature !')
+      const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
+      console.log(`Received a query for temperature from ${ip} !`)
+      
       res.json({
         avgTemp: 3//'0x3000000000000000000000000000000000000000000000000000000000000000'
       })
