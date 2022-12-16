@@ -2,13 +2,14 @@
 pragma solidity ^0.8.7;
 
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
+import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 
 /**
  * Request testnet LINK and ETH here: https://faucets.chain.link/
  * Find information on LINK Token Contracts and get the latest ETH and LINK faucets here: https://docs.chain.link/docs/link-token-contracts/
  */
 
-contract Weather is ChainlinkClient {
+contract Weather is ChainlinkClient, ConfirmedOwner {
     using Chainlink for Chainlink.Request;
 
     /**
@@ -34,12 +35,12 @@ contract Weather is ChainlinkClient {
     /**
     * @dev Init chainlink client
     */
-    function _initChainLinkClient(        
+    constructor(
         address _link,
         address _oracle,
-        string calldata _serverUrl,
+        string memory _serverUrl,
         uint256 _fee
-    ) internal
+    ) ConfirmedOwner(msg.sender)
     {
         setChainlinkToken(_link);
         setChainlinkOracle(_oracle);
@@ -51,22 +52,22 @@ contract Weather is ChainlinkClient {
         return avgTemp;
     }
 
-    function requestAvgTemp() public {
+    function requestAvgTemp() public returns (bytes32 requestId) {
         Chainlink.Request memory req = buildChainlinkRequest(
-            '7da2702f37fd48e5b1b9a5715e3509b6'
+            'ca98366cc7314957b8c012c72f05aeeb'
             , address(this)
             , this.fulfillAvgTemp.selector
         );
         req.add('get', serverUrl);
         req.add("path", "avgTemp");
         req.addInt('times', 1);
-        sendChainlinkRequest(req, fee);
+        return sendChainlinkRequest(req, fee);
     }
 
     function fulfillAvgTemp(
         bytes32 _requestId,
         uint256 _result
-    ) external recordChainlinkFulfillment(_requestId) {
+    ) public recordChainlinkFulfillment(_requestId) {
         avgTemp = _result;
         emit AvgTemp(_result);
     }

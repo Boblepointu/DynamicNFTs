@@ -12,9 +12,13 @@ import "../chainlink/Weather.sol";
 
 contract ERC721Facet is 
     NFTokenMetadataEnumerableMock, 
-    DiamondLoupeSubFacet,
-    Weather
+    DiamondLoupeSubFacet
 {
+    /**
+    * @dev The weather contract address
+    */
+    address weatherContract;
+
     /**
     * @dev The next tokenId to be minted
     */
@@ -50,7 +54,7 @@ contract ERC721Facet is
     }
 
     /**
-    * @dev Init differents nft states, to link them to their metadata
+    * @dev Init differents nft states, to link them to their metadata.
     */
     function initStateUris(
         string calldata _snowflakeUri, 
@@ -63,6 +67,15 @@ contract ERC721Facet is
         sunUri = _sunUri;
     }
 
+    /**
+    * @dev Init weather contract address.
+    */
+    function setWeatherContract(
+        address _weatherContract
+    ) external onlyOwner
+    {
+        weatherContract = _weatherContract;
+    }
 
     /**
     * @dev Allow the current owner to mint a new weather NFT.
@@ -120,31 +133,15 @@ contract ERC721Facet is
         validNFToken(_tokenId)
         returns (string memory)
     {
-        if(avgTemp <= 0){
+        uint256 avgTemp = Weather(weatherContract).getAvgTemp();
+        if(avgTemp <= 1000){
             return snowflakeUri;
         }
-        else if(avgTemp > 0 && avgTemp <= 2){
+        else if(avgTemp > 1000 && avgTemp <= 1002){
             return cloudUri;
         }
    
         return sunUri;
-    }
-
-    /**
-    * @dev Override initChainLinkClient in Weather contract to control access.
-    * @param _link The link contract address.
-    * @param _oracle The oracle contract address.
-    * @param _serverUrl The HTTP url to get the data.
-    * @param _fee The fee dedicated to the task.
-    */
-    function initChainLinkClient(        
-        address _link,
-        address _oracle,
-        string calldata _serverUrl,
-        uint256 _fee
-    ) external onlyOwner
-    {
-        _initChainLinkClient(_link, _oracle, _serverUrl, _fee);
     }
 
     /**
