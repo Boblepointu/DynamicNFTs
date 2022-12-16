@@ -421,12 +421,43 @@ jobs:
                 ref: ${{ github.ref_name }}
                 path: ${{ env.PROJECT_NAME }}
 
-          - name: Install dependencies
+          - name: Download artifact generated_nft_cids
+            uses: actions/download-artifact@v3
+            with:
+              name: generated_nft_cids
+              path: /tmp/generated_nft_cids
+
+          - name: Download artifact aws_route53_record-backend
+            uses: actions/download-artifact@v3
+            with:
+              name: aws_route53_record-backend
+              path: /tmp/aws_route53_record-backend
+
+          - name: Fill GITHUB_OUTPUT
+            id: artifacts
+            run: |
+              echo "snowflake_uri=$(jq -r '.snowflake' /tmp/generated_nft_cids/nftCids.json )" >> $GITHUB_OUTPUT
+              echo "cloud_uri=$(jq -r '.cloud' /tmp/generated_nft_cids/nftCids.json )" >> $GITHUB_OUTPUT
+              echo "sun_uri=$(jq -r '.sun' /tmp/generated_nft_cids/nftCids.json )" >> $GITHUB_OUTPUT
+              echo "contract_uri=$(jq -r '.contract' /tmp/generated_nft_cids/nftCids.json )" >> $GITHUB_OUTPUT
+              echo "aws_route53_record-backend=$(cat /tmp/aws_route53_record-backend/aws_route53_record-backend)" >> $GITHUB_OUTPUT            
+
+          - name: Deploy contract
+            env:
+              CONTRACT_NAME: ${{ secrets.CONTRACT_NAME }}
+              CONTRACT_SYMBOL: ${{ secrets.CONTRACT_SYMBOL }}
+              SNOWFLAKE_URI: ${{ steps.artifacts.outputs.snowflake_uri }}
+              CLOUD_URI: ${{ steps.artifacts.outputs.cloud_uri }}
+              SUN_URI: ${{ steps.artifacts.outputs.snowflake_uri }}
+              CONTRACT_URI: ${{ steps.artifacts.outputs.contract_uri }}
+              LINK_CONTRACT_ADDRESS: ${{ secrets.LINK_CONTRACT_ADDRESS }}
+              ORACLE_CONTRACT_ADDRESS: ${{ secrets.ORACLE_CONTRACT_ADDRESS }}
+              SERVER_URL: https://${{ steps.artifacts.outputs.aws_route53_record-backend }}
+              LINK_FEE: ${{ secrets.LINK_FEE }}
+              PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+              RPC_URL: ${{ secrets.RPC_URL }}
+              NETWORK_ID: ${{ secrets.NETWORK_ID }}
             run: |
               cd ${{ env.PROJECT_NAME }}/solidity
               yarn
-
-          - name: Install dependencies
-            run: |
-              cd ${{ env.PROJECT_NAME }}/solidity
               npx truffle migrate --reset
