@@ -12,21 +12,8 @@ import "../ownership/ownable.sol";
  */
 contract NFTokenMetadataEnumerableMock is
   NFTokenEnumerable,
-  NFTokenMetadata,
-  Ownable
+  NFTokenMetadata
 {
-    /**
-   * @dev Removes a NFT from owner.
-   * @param _tokenId Which NFT we want to remove.
-   */
-  function burn(
-    uint256 _tokenId
-  )
-    external
-    onlyOwner
-  {
-    super._burn(_tokenId);
-  }
 
   /**
    * @dev Mints a new NFT.

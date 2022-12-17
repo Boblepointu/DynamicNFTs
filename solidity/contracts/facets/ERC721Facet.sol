@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import { LibDiamond } from  "../libraries/LibDiamond.sol";
 import "./erc721/mocks/nf-token-metadata-enumerable-mock.sol";
 import "./DiamondLoupeSubFacet.sol";
-import "./erc721/tokens/erc721.sol";
-import "./erc721/tokens/erc721-enumerable.sol";
-import "../interfaces/IERC165.sol";
-import "../interfaces/IERC173.sol";
+
 import "../chainlink/Weather.sol";
+import "../interfaces/IERC721.sol";
+import "../GenericInheritance.sol";
 
 contract ERC721Facet is 
-    NFTokenMetadataEnumerableMock, 
-    DiamondLoupeSubFacet
+    NFTokenMetadataEnumerableMock,
+    GenericInheritance
 {
     /**
     * @dev The weather contract address
@@ -43,20 +41,6 @@ contract ERC721Facet is
     * @dev The contractUri
     */
     string private contractUri;
-
-    /**
-    * @dev Init supported interfaces
-    */
-    function initSupportedInterfaces() external onlyOwner
-    {
-        LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
-        ds.supportedInterfaces[type(ERC721).interfaceId] = true; // ERC721
-        ds.supportedInterfaces[type(ERC721Enumerable).interfaceId] = true; // ERC721Enumerable
-        ds.supportedInterfaces[type(ERC721Metadata).interfaceId] = true; // ERC721Metadata
-        ds.supportedInterfaces[type(IERC165).interfaceId] = true; // ERC165 SupportInterface
-        ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true; // EIP2535 DiamondLoup
-        ds.supportedInterfaces[type(IERC173).interfaceId] = true; // ERC173 Ownable
-    }
 
     /**
     * @dev Init differents nft states, to link them to their metadata.

@@ -13,6 +13,8 @@ import { IDiamondCut } from "../interfaces/IDiamondCut.sol";
 error InitializationFunctionReverted(address _initializationContractAddress, bytes _calldata);
 
 library LibDiamond {
+    string public constant NOT_CURRENT_OWNER = "018001";
+
     bytes32 constant DIAMOND_STORAGE_POSITION = keccak256("diamond.standard.diamond.storage");
 
     struct FacetAddressAndPosition {
