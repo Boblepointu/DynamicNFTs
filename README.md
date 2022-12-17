@@ -51,12 +51,12 @@ And, at last, the S3 bucket that will hold the terraform state files, necessary 
 
 # Improvement possible
 
-    - Develop the code to upgrade the Diamond through the CI
-    - Allow multiple IPFS server to run concurrently
-    - Configure fully Github with protected branches; PR prefill; PR restrictions; Github OWNERFILES
-    - Two environment, dev and prod (minor adjustement)
-    - Adding standard-version to manage versions in the package.json in parallel than in the github repository
-    - Plug the docker image tags in the ECR registry to the repository tag
-    - Fine grained AWS service account role / policies for all the actions performed by this repository
-    - Take time to integrate fully ERC721 + extensions implementations into facets / inheritance
-    - ...
+- Develop the code to upgrade the Diamond through the CI
+- Allow multiple IPFS server to run concurrently
+- Configure fully Github with protected branches; PR prefill; PR restrictions; Github OWNERFILES
+- Two environment, dev and prod (minor adjustement)
+- Adding standard-version to manage versions in the package.json in parallel than in the github repository
+- Plug the docker image tags in the ECR registry to the repository tag
+- Fine grained AWS service account role / policies for all the actions performed by this repository
+- Take time to integrate fully ERC721 + extensions implementations into facets / inheritance
+- ...
