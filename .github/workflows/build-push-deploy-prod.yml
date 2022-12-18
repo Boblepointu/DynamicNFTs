@@ -44,6 +44,7 @@ jobs:
                 TF_VAR_ipfs_login: ${{ secrets.ADMIN_IPFS_LOGIN }}
                 TF_VAR_ipfs_password: ${{ secrets.ADMIN_IPFS_PASSWORD }}
                 TF_VAR_private_key: ${{ secrets.PRIVATE_KEY }}
+                TF_VAR_rpc_url: ${{ secrets.RPC_URL }}
               run: terraform -chdir=${{ env.PROJECT_NAME }}/.deployment apply -var-file="variables.tfvars" -auto-approve
 
             - name: Recover Terraform outputs

@@ -3,11 +3,12 @@ const Express = require('express')
 const Axios = require('axios')
 const Web3 = require('web3')
 
-const { PRIVATE_KEY } = process.env
+const { PRIVATE_KEY, RPC_URL } = process.env
 
 let avgTempPlus1000 = 1000
 
 const dataRefresh = async () => {
+  const web3 = new Web3();
   while(true){
     const { current_condition: { tmp } } = (await Axios.get('https://www.prevision-meteo.ch/services/json/paris')).data
 

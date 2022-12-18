@@ -81,3 +81,8 @@ variable "private_key" {
   type        = string
   description = "The private key to operate the smart contract"
 }
+
+variable "rpc_url" {
+  type        = string
+  description = "The RPC to connect to"
+}

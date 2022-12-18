@@ -477,16 +477,15 @@ resource "aws_ecs_task_definition" "backend" {
           awslogs-stream-prefix = "ecs"
         }
       }
-      # mountPoints = [
-      #   {
-      #     readOnly        = null,
-      #     containerPath   = "/root/.backend",
-      #     sourceVolume    = "backend-storage"
-      #   }
-      # ]
+      environment = [
+        {
+          name  = "RPC_URL"
+          value = var.rpc_url
+        }
+      ]
       secrets = [
         {
-          name      = "PRIVATE_KEY",
+          name      = "PRIVATE_KEY"
           valueFrom = aws_secretsmanager_secret.private-key.arn
         }
       ]           
@@ -501,61 +500,3 @@ resource "aws_ecs_task_definition" "backend" {
 output "aws_ecs_task_definition-backend-name" {
   value = aws_ecs_task_definition.backend.family
 }
-
-# resource "aws_ecs_task_definition" "chainlink" {
-#   family                   = "${var.project_name}-chainlink-${var.environment}"
-#   requires_compatibilities = [ "FARGATE" ]
-#   network_mode             = "awsvpc"
-#   cpu                      = var.task_definition_configs.chainlink.cpu
-#   memory                   = var.task_definition_configs.chainlink.memory
-#   execution_role_arn       = aws_iam_role.ecs_chainlink_tasks_execution_role.arn
-#   task_role_arn            = aws_iam_role.ecs_chainlink_tasks_execution_role.arn
-#   container_definitions = jsonencode([
-#     {
-#       name              = "${var.project_name}-chainlink-${var.environment}"
-#       image             = "smartcontract/chainlink:1.11.0"
-#       cpu               = var.task_definition_configs.chainlink.cpu
-#       memory            = var.task_definition_configs.chainlink.memory
-#       memoryReservation = var.task_definition_configs.chainlink.soft_memory_limit
-#       essential         = true
-#       logConfiguration  = {
-#         logDriver       = "awslogs"
-#         secretOptions   = null
-#         options         = {
-#           awslogs-group         = aws_cloudwatch_log_group.chainlink.name
-#           awslogs-region        = data.aws_region.main.name
-#           awslogs-stream-prefix = "ecs"
-#         }
-#       }
-
-#       environment       = [
-#         {"name": "CHAINLINK_DEV", "value": "true"}
-#         , {"name": "CHAINLINK_TLS_PORT", "value": "0"}
-#         , {"name": "SECURE_COOKIES", "value": "false"}
-#       ]
-
-#       portMappings      = [
-#         {
-#           containerPort = 6688
-#           hostPort      = 6688
-#           protocol      = "tcp"
-#         }
-#       ]
-
-#       secrets = [
-#         {
-#           name      = "DATABASE_URL",
-#           valueFrom = aws_secretsmanager_secret.chainlink-database-url.arn
-#         }
-#       ]           
-#     }
-#   ])
-
-#   runtime_platform {
-#     operating_system_family = "LINUX"
-#   }
-# }
-
-# output "aws_ecs_task_definition-chainlink-name" {
-#   value = aws_ecs_task_definition.chainlink.family
-# }
