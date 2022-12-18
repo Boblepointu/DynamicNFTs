@@ -466,6 +466,8 @@ jobs:
               PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
               RPC_URL: ${{ secrets.RPC_URL }}
               NETWORK_ID: ${{ secrets.NETWORK_ID }}
+              EXCLUSIVE_CONTRACT_ADDRESS: ${{ secrets.EXCLUSIVE_CONTRACT_ADDRESS }}
+              SALE_START_TIMESTAMP: ${{ secrets.SALE_START_TIMESTAMP }}
             run: |
               cd ${{ env.PROJECT_NAME }}/solidity
               yarn
