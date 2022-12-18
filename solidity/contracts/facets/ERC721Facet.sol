@@ -222,19 +222,4 @@ contract ERC721Facet is
    
         return sunUri;
     }
-
-    /**
-    * @dev Convert a string to byte32.
-    * @param source The string to convert.
-    */
-    function stringToBytes32(string memory source) private pure returns (bytes32 result) {
-        bytes memory tempEmptyStringTest = bytes(source);
-        if (tempEmptyStringTest.length == 0) {
-        return 0x0;
-        }
-
-        assembly { // solhint-disable-line no-inline-assembly
-        result := mload(add(source, 32))
-        }
-    }
 }
