@@ -86,3 +86,18 @@ variable "rpc_url" {
   type        = string
   description = "The RPC to connect to"
 }
+
+variable "weather_contract_address" {
+  type        = string
+  description = "The weather contract address"
+}
+
+variable "link_fee" {
+  type        = string
+  description = "The link fee to ask oracle"
+}
+
+variable "link_contract_address" {
+  type        = string
+  description = "The address of the ERC20 link contract"
+}
