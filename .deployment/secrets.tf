@@ -22,12 +22,12 @@ resource "aws_secretsmanager_secret_version" "ipfs-password" {
   secret_string = var.ipfs_password
 }
 
-# resource "aws_secretsmanager_secret" "chainlink-database-url" {
-#   name                    = "${var.project_name}-chainlink-database-url-${var.environment}"
-#   recovery_window_in_days = 0
-# }
+resource "aws_secretsmanager_secret" "private-key" {
+  name                    = "${var.project_name}-private-key-${var.environment}"
+  recovery_window_in_days = 0
+}
 
-# resource "aws_secretsmanager_secret_version" "chainlink-database-url" {
-#   secret_id     = aws_secretsmanager_secret.chainlink-database-url.id
-#   secret_string = "postgresql://${module.pg-cluster.cluster_master_username}:${module.pg-cluster.cluster_master_password}@${module.pg-cluster.cluster_endpoint}:${module.pg-cluster.cluster_port}/${module.pg-cluster.cluster_database_name}"
-# }
+resource "aws_secretsmanager_secret_version" "private-key" {
+  secret_id     = aws_secretsmanager_secret.private-key.id
+  secret_string = var.private_key
+}

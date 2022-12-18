@@ -69,10 +69,6 @@ resource "aws_cloudwatch_log_group" "backend" {
   name = "/ecs/${var.project_name}-backend-${var.environment}"
 }
 
-# resource "aws_cloudwatch_log_group" "chainlink" {
-#   name = "/ecs/${var.project_name}-chainlink-${var.environment}"
-# }
-
 ########################
 #### ECS services ######
 ########################
@@ -212,46 +208,6 @@ resource "aws_ecs_service" "backend" {
 output "aws_ecs_service-backend-name" {
   value = "${var.project_name}-backend-${var.environment}"
 }
-
-# resource "aws_ecs_service" "chainlink" {
-#   name            = "${var.project_name}-chainlink-${var.environment}"
-#   cluster         = aws_ecs_cluster.main.arn
-#   task_definition = aws_ecs_task_definition.chainlink.arn
-#   desired_count   = 1
-#   launch_type     = "FARGATE"
-
-#   health_check_grace_period_seconds = 5
-
-#   deployment_maximum_percent = 100
-#   deployment_minimum_healthy_percent = 0
-
-#   load_balancer {
-#     target_group_arn = aws_lb_target_group.chainlink.arn
-#     container_name   = "${var.project_name}-chainlink-${var.environment}"
-#     container_port   = 6688
-#   }
-  
-#   network_configuration {
-#     subnets          = data.aws_subnets.main.ids
-#     assign_public_ip = true
-#     security_groups  = [ aws_security_group.ecs-chainlink.id ]
-#   }
-
-#   deployment_circuit_breaker {
-#     enable   = true
-#     rollback = true
-#   }
-
-#   # lifecycle {
-#   #   ignore_changes = [
-#   #     task_definition
-#   #   ]
-#   # }
-# }
-
-# output "aws_ecs_service-chainlink-name" {
-#   value = "${var.project_name}-chainlink-${var.environment}"
-# }
 
 #####################################
 #### ECS roles and policies #########
@@ -528,16 +484,12 @@ resource "aws_ecs_task_definition" "backend" {
       #     sourceVolume    = "backend-storage"
       #   }
       # ]
-      # secrets = [
-      #   {
-      #     name      = "LOGIN",
-      #     valueFrom = aws_secretsmanager_secret.backend-login.arn
-      #   },
-      #   {
-      #     name      = "PASSWORD",
-      #     valueFrom = aws_secretsmanager_secret.backend-password.arn
-      #   }
-      # ]           
+      secrets = [
+        {
+          name      = "PRIVATE_KEY",
+          valueFrom = aws_secretsmanager_secret.private-key.arn
+        }
+      ]           
     }
   ])
 

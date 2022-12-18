@@ -75,7 +75,9 @@ variable "ipfs_password" {
   type        = string
   description = "The password to access IPFS admin port"
 }
-# variable "db_password" {
-#   type        = string
-#   description = "The password to access pg database"
-# }
+
+# Chain Configuration
+variable "private_key" {
+  type        = string
+  description = "The private key to operate the smart contract"
+}
