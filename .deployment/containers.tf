@@ -477,7 +477,7 @@ resource "aws_ecs_task_definition" "backend" {
           awslogs-stream-prefix = "ecs"
         }
       }
-      environment = [weather_address
+      environment = [
         {
           name  = "WEATHER_CONTRACT_ADDRESS"
           value = var.weather_contract_address
