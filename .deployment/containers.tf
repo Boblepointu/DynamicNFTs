@@ -259,14 +259,34 @@ resource "aws_iam_policy" "ipfs-secrets" {
             "elasticfilesystem:ClientWrite"
           ],
           Effect    = "Allow",
-          Resource  = "*"
-          # Condition = {
-          #     "ForAnyValue:StringEquals" = {
-          #         "elasticfilesystem:AccessPointArn" = [
-          #             aws_efs_access_point.ipfs-0.arn
-          #         ]
-          #     }
-          # }          
+          Resource  = "*"        
+        }
+      ]
+  })  
+}
+
+resource "aws_iam_policy" "backend-secrets" {
+  name   = "${var.project_name}-backend-${var.environment}"
+  policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action = [
+            "secretsmanager:GetSecretValue"
+          ]
+          Effect   = "Allow"
+          Resource = aws_secretsmanager_secret.private-key.arn
+        },{
+          Action = [
+            "ecr:GetAuthorizationToken",
+            "ecr:BatchCheckLayerAvailability",
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:BatchGetImage",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ],
+          Effect   = "Allow",
+          Resource = "*"
         }
       ]
   })  
@@ -301,7 +321,7 @@ resource "aws_iam_role" "ecs_backend_tasks_execution_role" {
 
 resource "aws_iam_role_policy_attachment" "ecs_backend_tasks_default" {
   role       = aws_iam_role.ecs_backend_tasks_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  policy_arn = aws_iam_policy.backend-secrets.arn
 }
 
 # Chainlink task
