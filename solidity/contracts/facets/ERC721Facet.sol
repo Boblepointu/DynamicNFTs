@@ -43,6 +43,12 @@ contract ERC721Facet is
     string private contractUri;
 
     /**
+    * @dev Exclusive contract pass
+    */
+    address private exclusiveContract;
+
+
+    /**
     * @dev Init differents nft states, to link them to their metadata.
     */
     function initStateUris(
@@ -57,6 +63,16 @@ contract ERC721Facet is
     }
 
     /**
+    * @dev Set exclusive contract address.
+    */
+    function setExclusiveContract(
+        address _exclusiveContract
+    ) external onlyOwner
+    {
+        exclusiveContract = _exclusiveContract;
+    }
+
+    /**
     * @dev Init weather contract address.
     */
     function setWeatherContract(
@@ -64,6 +80,47 @@ contract ERC721Facet is
     ) external onlyOwner
     {
         weatherContract = _weatherContract;
+    }
+
+    /**
+    * @dev Allow anyone owning a specific NFT in another collection to mint 
+    * @param _to The address that will own the minted NFT.
+    * @param _uri String representing RFC 3986 URI.
+    */
+    function payableExclusiveMint(
+        uint256 _exclusiveTokenId,
+        address _to
+    ) external payable
+    {
+        require(ERC721(exclusiveContract).ownerOf(_exclusiveTokenId) == msg.sender, 'You do not own the required NFT to mint in exclusive mode. Wait 20min to buy some of this collection.');
+        require(msg.value == 500000000000000, 'You did not send enough eth to mint ! Price is 0.0005ETH');
+        require(this.totalSupply() <= 15, 'No luck ! This collection has already been fully minted !');
+
+        payable(this).transfer(msg.value);
+
+        super._mint(_to, nextTokenId);
+        super._setTokenUri(nextTokenId, snowflakeUri);
+        nextTokenId = nextTokenId + 1;
+    }
+
+    /**
+    * @dev Allow anyone to mint 
+    * @param _to The address that will own the minted NFT.
+    * @param _uri String representing RFC 3986 URI.
+    */
+    function payableExclusiveMint(
+        uint256 _exclusiveTokenId,
+        address _to
+    ) external payable
+    {
+        require(msg.value == 1000000000000000, 'You did not send enough eth to mint ! Price is 0.001ETH');
+        require(this.totalSupply() <= 15, 'No luck ! This collection has already been fully minted !');
+
+        payable(this).transfer(msg.value);
+
+        super._mint(_to, nextTokenId);
+        super._setTokenUri(nextTokenId, snowflakeUri);
+        nextTokenId = nextTokenId + 1;
     }
 
     /**
@@ -76,21 +133,6 @@ contract ERC721Facet is
     {
         super._mint(_to, nextTokenId);
         super._setTokenUri(nextTokenId, snowflakeUri);
-        nextTokenId = nextTokenId + 1;
-    }
-
-    /**
-    * @dev Allow the current owner to mint a new NFT with arbitrary tokenURI.
-    * @param _to The address that will own the minted NFT.
-    * @param _uri String representing RFC 3986 URI.
-    */
-    function mint(
-        address _to,
-        string calldata _uri
-    ) external onlyOwner
-    {
-        super._mint(_to, nextTokenId);
-        super._setTokenUri(nextTokenId, _uri);
         nextTokenId = nextTokenId + 1;
     }
 
