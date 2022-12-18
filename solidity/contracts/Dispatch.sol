@@ -18,10 +18,6 @@ contract Dispatch is GenericInheritance
     */
     address payable receiverTwo;
 
-    event Received(address, uint);
-
-    event Sent(address, uint);
-
     /**
     * @dev Set dispatch contract
     * @param _receiverOne The first address to transfer 50% to.

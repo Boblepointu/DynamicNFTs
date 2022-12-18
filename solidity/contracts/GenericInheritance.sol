@@ -11,6 +11,11 @@ import "./interfaces/IERC2981.sol";
 import { LibDiamond } from  "./libraries/LibDiamond.sol";
 
 contract GenericInheritance is DiamondLoupeSubFacet {
+    
+    event Received(address, uint);
+
+    event Sent(address, uint);
+
     /**
     * @dev Init supported interfaces
     */
