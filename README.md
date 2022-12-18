@@ -14,6 +14,8 @@ A simple all rounds implementation of dynamic NFTs collection, from infra to fro
 - The address of the LINK oracle contract / operator on that network (ORACLE_CONTRACT_ADDRESS)
 - The address of the LINK token contract on that network (LINK_CONTRACT_ADDRESS)
 - The fee needed to run the oracle / operator (testnets, 0.1 LINK (100000000000000000), mainnets, 1 LINK (1000000000000000000)) (LINK_FEE)
+- The address of a ERC721 contract, that will allow its holders to mint in advance the token of our contract
+- The timestamp to start the sell
 
 # Setting up CI variables
 
@@ -25,6 +27,7 @@ The list is following :
 - ADMIN_IPFS_PASSWORD = whatever you want
 - CONTRACT_NAME = whatever you want
 - CONTRACT_SYMBOL = whatever you want
+- WEATHER_CONTRACT_ADDRESS = At first run, before having deployed your contract, set it to 0x00, then, once contracts have been deployed, set it to the actual address of the weather contract (See artifact truffle_output in CI) and relaunch the CI, having setted the ./contract_deployment_switch file to 0)
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
 - LINK_CONTRACT_ADDRESS
@@ -33,6 +36,9 @@ The list is following :
 - PRIVATE_KEY
 - RPC_URL
 - NETWORK_ID
+- SALE_START_TIMESTAMP
+- EXCLUSIVE_CONTRACT_ADDRESS
+- SALE_START_TIMESTAMP
 
 # Setting up Terraform variables
 
