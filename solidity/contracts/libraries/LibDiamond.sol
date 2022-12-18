@@ -40,6 +40,9 @@ library LibDiamond {
         mapping(bytes4 => bool) supportedInterfaces;
         // owner of the contract
         address contractOwner;
+        // Addresses of the royalties receivers
+        address payable receiverOne;
+        address payable receiverTwo;
     }
 
     function diamondStorage() internal pure returns (DiamondStorage storage ds) {
@@ -50,6 +53,18 @@ library LibDiamond {
     }
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+    * @dev Set dispatch contract
+    * @param _receiverOne The first address to transfer 50% to.
+    * @param _receiverTwo The second address to transfer 50% to.
+    */
+    function setReceivers(address _receiverOne, address _receiverTwo) internal
+    {
+        DiamondStorage storage ds = diamondStorage();
+        ds.receiverOne = payable(_receiverOne);
+        ds.receiverTwo = payable(_receiverTwo);
+    }
 
     function setContractOwner(address _newOwner) internal {
         DiamondStorage storage ds = diamondStorage();

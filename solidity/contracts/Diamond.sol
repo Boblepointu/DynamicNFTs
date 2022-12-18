@@ -10,8 +10,9 @@ pragma solidity ^0.8.0;
 
 import { LibDiamond } from "./libraries/LibDiamond.sol";
 import { IDiamondCut } from "./interfaces/IDiamondCut.sol";
+import "./Dispatch.sol";
 
-contract Diamond {    
+contract Diamond is Dispatch {    
 
     constructor(address _contractOwner, address _diamondCutFacet) payable {        
         LibDiamond.setContractOwner(_contractOwner);
@@ -58,6 +59,4 @@ contract Diamond {
                 }
         }
     }
-
-    receive() external payable {}
 }
