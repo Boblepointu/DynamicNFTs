@@ -20,6 +20,8 @@ const {
   , ORACLE_CONTRACT_ADDRESS
   , SERVER_URL
   , LINK_FEE
+  , EXCLUSIVE_CONTRACT_ADDRESS
+  , SALE_START_TIMESTAMP
 } = process.env
 
 module.exports = async (deployer) => {
@@ -123,6 +125,10 @@ module.exports = async (deployer) => {
   console.log(`Setted nft states to snowflake = ${SNOWFLAKE_URI}, cloud = ${CLOUD_URI}, sun = ${SUN_URI}`)
   await ERC721FacetInstance.setContractUri(CONTRACT_URI)
   console.log(`Setted contract URI to ${CONTRACT_URI}`)
+  await ERC721FacetInstance.setExclusiveContract(EXCLUSIVE_CONTRACT_ADDRESS)
+  console.log(`Setted exclusive contract address to ${EXCLUSIVE_CONTRACT_ADDRESS}`)
+  await ERC721FacetInstance.setSaleStartDate(SALE_START_TIMESTAMP)
+  console.log(`Setted the sale start date to ${SALE_START_TIMESTAMP}`)
   await ERC721FacetInstance.initSupportedInterfaces()
   console.log(`Initted supported interfaces to ERC721Metadata, ERC721Enumerable and ERC721`)
   await WeatherInstance.requestAvgTemp()
