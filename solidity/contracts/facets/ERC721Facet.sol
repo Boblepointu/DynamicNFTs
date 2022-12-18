@@ -47,6 +47,11 @@ contract ERC721Facet is
     */
     address private exclusiveContract;
 
+    /**
+    * @dev Exclusive contract pass
+    */
+    uint256 private saleStartDate;
+
 
     /**
     * @dev Init differents nft states, to link them to their metadata.
@@ -83,9 +88,20 @@ contract ERC721Facet is
     }
 
     /**
+    * @dev Set the sale start date
+    * @param _saleStartDate Timestamp of the sale start
+    */
+    function setSaleStartDate(
+        uint256 _saleStartDate
+    ) external onlyOwner
+    {
+        saleStartDate = _saleStartDate;
+    }
+
+    /**
     * @dev Allow anyone owning a specific NFT in another collection to mint 
-    * @param _to The address that will own the minted NFT.
-    * @param _uri String representing RFC 3986 URI.
+    * @param _exclusiveTokenId The address that will own the minted NFT.
+    * @param _to Adress that will receive the NFT.
     */
     function payableExclusiveMint(
         uint256 _exclusiveTokenId,
@@ -93,10 +109,17 @@ contract ERC721Facet is
     ) external payable
     {
         require(ERC721(exclusiveContract).ownerOf(_exclusiveTokenId) == msg.sender, 'You do not own the required NFT to mint in exclusive mode. Wait 20min to buy some of this collection.');
-        require(msg.value == 500000000000000, 'You did not send enough eth to mint ! Price is 0.0005ETH');
+        require(msg.value >= 500000000000000, 'You did not send enough eth to mint ! Price is 0.0005ETH');
         require(this.totalSupply() <= 15, 'No luck ! This collection has already been fully minted !');
+        require(block.timestamp > saleStartDate, "The sale hasn't started yet !");  
 
-        payable(this).transfer(msg.value);
+        LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
+
+        ds.receiverOne.transfer(msg.value/2);
+        emit Sent(ds.receiverOne, msg.value/2);
+
+        ds.receiverTwo.transfer(msg.value/2);
+        emit Sent(ds.receiverTwo, msg.value/2);
 
         super._mint(_to, nextTokenId);
         super._setTokenUri(nextTokenId, snowflakeUri);
@@ -105,18 +128,24 @@ contract ERC721Facet is
 
     /**
     * @dev Allow anyone to mint 
-    * @param _to The address that will own the minted NFT.
-    * @param _uri String representing RFC 3986 URI.
+    * @param _to Adress that will receive the NFT.
     */
-    function payableExclusiveMint(
-        uint256 _exclusiveTokenId,
+    function payableNonExclusiveMint(
         address _to
     ) external payable
     {
-        require(msg.value == 1000000000000000, 'You did not send enough eth to mint ! Price is 0.001ETH');
+        require(msg.value >= 1000000000000000, 'You did not send enough eth to mint ! Price is 0.001ETH');
         require(this.totalSupply() <= 15, 'No luck ! This collection has already been fully minted !');
+        require(block.timestamp > saleStartDate, "The sale hasn't started yet !");
+        require(block.timestamp > (saleStartDate + 60 * 20), "The sale has started but you need to be an exclusive to buy for the 20 first minutes !");
 
-        payable(this).transfer(msg.value);
+        LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
+
+        ds.receiverOne.transfer(msg.value/2);
+        emit Sent(ds.receiverOne, msg.value/2);
+
+        ds.receiverTwo.transfer(msg.value/2);
+        emit Sent(ds.receiverTwo, msg.value/2);
 
         super._mint(_to, nextTokenId);
         super._setTokenUri(nextTokenId, snowflakeUri);
