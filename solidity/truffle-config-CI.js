@@ -76,8 +76,8 @@ module.exports = {
     // },
     development: {
       provider: () => new HDWalletProvider(PRIVATE_KEY, RPC_URL),
-      network_id: NETWORK_ID, 
-      confirmations: 1,    // # of confs to wait between deployments. (default: 0)
+      network_id: parseInt(NETWORK_ID), 
+      confirmations: 0,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets )
       maxFeePerGas:5500000,
