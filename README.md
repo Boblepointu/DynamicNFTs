@@ -38,7 +38,7 @@ The list is following :
 - NETWORK_ID
 - SALE_START_TIMESTAMP
 - EXCLUSIVE_CONTRACT_ADDRESS
-- DIAMOND_CONTRACT_ADDRESS
+- DIAMOND_CONTRACT_ADDRESS = At first run, before having deployed your contract, set it to 0x00, then, once contracts have been deployed, set it to the actual address of the weather contract (See artifact truffle_output in CI) and relaunch the CI, having setted the ./contract_deployment_switch file to 0)
 - SALE_START_TIMESTAMP
 
 # Setting up Terraform variables
