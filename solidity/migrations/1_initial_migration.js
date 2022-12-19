@@ -3,7 +3,6 @@ const FacetCutAction = { Add: 0, Replace: 1, Remove: 2 }
 const DiamondCutFacet = artifacts.require("DiamondCutFacet")
 const ERC721Facet = artifacts.require('ERC721Facet')
 const ERC2981Facet = artifacts.require('ERC2981Facet')
-const DispatchFacet = artifacts.require('DispatchFacet')
 const Diamond = artifacts.require('Diamond')
 const DiamondInit = artifacts.require('DiamondInit')
 const IERC20 = artifacts.require('IERC20')
