@@ -37,7 +37,7 @@
 
                 const accounts = await web3.request({ method: 'eth_requestAccounts' })
 
-                await provider.request({
+                await web3.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: `0x${NETWORK_ID}`}],
                 })
