@@ -381,6 +381,10 @@ resource "aws_ecs_task_definition" "frontend" {
         {
           name  = "NETWORK_ID"
           value = var.network_id
+        },
+        {
+          name  = "IPFS_HOST"
+          value = var.lb_dns_record_ipfs
         }
       ]
 

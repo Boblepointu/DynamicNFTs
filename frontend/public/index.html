@@ -18,6 +18,7 @@
             let account
             let abi
             let BACKEND_HOST
+            let IPFS_HOST
             let WEATHER_CONTRACT_ADDRESS
             let DIAMOND_CONTRACT_ADDRESS
             let EXCLUSIVE_CONTRACT_ADDRESS
@@ -71,6 +72,7 @@
                 const runTimeVars = await (await fetch('/runTimeVars')).json()
 
                 BACKEND_HOST = runTimeVars.BACKEND_HOST
+                IPFS_HOST = runTimeVars.IPFS_HOST
                 WEATHER_CONTRACT_ADDRESS = runTimeVars.WEATHER_CONTRACT_ADDRESS
                 DIAMOND_CONTRACT_ADDRESSs = runTimeVars.DIAMOND_CONTRACT_ADDRESSs
                 EXCLUSIVE_CONTRACT_ADDRESS = runTimeVars.EXCLUSIVE_CONTRACT_ADDRESS
