@@ -207,7 +207,6 @@ contract ERC721Facet is
         uint256 _tokenId
     )
         external
-        override
         view
         validNFToken(_tokenId)
         returns (string memory)
