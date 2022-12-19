@@ -11,11 +11,11 @@ delay=15
 while true; do
 "$@" && break || {
     if [[ $n -lt $max ]]; then
-    ((n++))
-    echo "Command failed. Attempt $n/$max:"
-    sleep $delay;
+        ((n++))
+        echo "Command failed. Attempt $n/$max:"
+        sleep $delay;
     else
-    fail "The command has failed after $n attempts."
+        fail "The command has failed after $n attempts."
     fi
 }
 done
