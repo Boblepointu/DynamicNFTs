@@ -11,7 +11,7 @@ const main = async () => {
     const app = Express()
     const port = 3000
     
-    app.get('/runtTimeVars', (req, res) => {
+    app.get('/runTimeVars', (req, res) => {
         res.setHeader('Content-Type', 'application/json')
         res.end(JSON.stringify({
             BACKEND_HOST
