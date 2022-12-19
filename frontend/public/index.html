@@ -35,7 +35,7 @@
                     , NETWORK_ID
                 } = (await fetch('/runTimeVars')).json()
 
-                const abi = (await fetch('/public/abi.json')).json()
+                const abi = (await fetch('/abi.json')).json()
 
                 await window.ethereum.request({
                     method: 'wallet_switchEthereumChain',
