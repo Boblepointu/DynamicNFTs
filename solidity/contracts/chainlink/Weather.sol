@@ -38,13 +38,16 @@ contract Weather is ChainlinkClient, ConfirmedOwner {
     constructor(
         address _link,
         address _oracle,
-        string memory _serverUrl,
         uint256 _fee
     ) ConfirmedOwner(msg.sender)
     {
         setChainlinkToken(_link);
         setChainlinkOracle(_oracle);
         fee = _fee;
+        serverUrl = _serverUrl;
+    }
+
+    function setServerUrl(string calldata _serverUrl) public ConfirmedOwner(msg.sender){
         serverUrl = _serverUrl;
     }
 

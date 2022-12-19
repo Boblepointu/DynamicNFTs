@@ -38,8 +38,12 @@ module.exports = async (deployer) => {
   const accounts = await web3.eth.getAccounts()
 
   console.log(`Deploying Weather`)
-  await deployer.deploy(Weather, LINK_CONTRACT_ADDRESS, ORACLE_CONTRACT_ADDRESS, SERVER_URL, LINK_FEE)
+  await deployer.deploy(Weather, LINK_CONTRACT_ADDRESS, ORACLE_CONTRACT_ADDRESS, LINK_FEE)
   console.log(`Initted chainlink client with link address ${LINK_CONTRACT_ADDRESS}, oracle address ${ORACLE_CONTRACT_ADDRESS}, and a fixed fee of ${LINK_FEE} `)
+
+  const WeatherInstance = await Weather.at(Weather.address)
+  await WeatherInstance.setServerUrl(SERVER_URL)
+  console.log(`Setted server url in Weather contract (${SERVER_URL}).`)
 
   await writeToFile('WEATHER', Weather.address)
 
@@ -123,7 +127,6 @@ module.exports = async (deployer) => {
   const ERC721FacetInstance = await ERC721Facet.at(Diamond.address)
   const ERC2981FacetInstance = await ERC2981Facet.at(Diamond.address)
   const DispatchInstance = await Diamond.at(Diamond.address)
-  const WeatherInstance = await Weather.at(Weather.address)
 
   // initting diamond
   console.log(`Executing extra func to init`)
