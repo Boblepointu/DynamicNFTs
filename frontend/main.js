@@ -2,6 +2,9 @@ const Express = require('express')
 
 const {
     BACKEND_HOST
+    , WEATHER_CONTRACT_ADDRESS
+    , DIAMOND_CONTRACT_ADDRESS
+    , EXCLUSIVE_CONTRACT_ADDRESS
 } = process.env
 
 const main = async () => {
@@ -12,6 +15,9 @@ const main = async () => {
         res.setHeader('Content-Type', 'application/json')
         res.end(JSON.stringify({
             BACKEND_HOST
+            , WEATHER_CONTRACT_ADDRESS
+            , DIAMOND_CONTRACT_ADDRESS
+            , EXCLUSIVE_CONTRACT_ADDRESS
         }))
     })
 
