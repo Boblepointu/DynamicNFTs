@@ -3,6 +3,7 @@
     "@chainlink/contracts": "^0.5.1",
     "@chainlink/token": "^1.1.0",
     "@truffle/hdwallet-provider": "1.5.1-alpha.1",
-    "truffle": "5.7.0"
+    "truffle": "5.7.0",
+    "web3-provider-engine": "^16.0.4"
   }
 }

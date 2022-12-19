@@ -23,7 +23,8 @@ const {
   , NETWORK_ID
 } = process.env
 
-const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider')
+const NonceTrackerSubprovider = require("web3-provider-engine/subproviders/nonce-tracker")
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
@@ -87,11 +88,16 @@ module.exports = {
     // },
     development: {
       //  websockets: true,
-       provider: () => new HDWalletProvider({
-        privateKeys: [ PRIVATE_KEY ],
-        providerOrUrl: RPC_URL,
-        pollingInterval: 10000
-      }),
+      provider: () => {
+        const wallet = new HDWalletProvider({
+          privateKeys: [ PRIVATE_KEY ],
+          providerOrUrl: RPC_URL
+        })
+        const nonceTracker = new NonceTrackerSubprovider()
+        wallet.engine._providers.unshift(nonceTracker)
+        nonceTracker.setEngine(wallet.engine)
+        return wallet
+      },
       // provider: () => new PrivateKeyProvider(
       //   "9102c6da18031b378af9f4883b55b864ccc3acce1fbc9408821e8da0fbd0d4c9", 
       //   "https://goerli.infura.io/v3/d60820df6e2c4a22be8ffd2dc712f66e"
