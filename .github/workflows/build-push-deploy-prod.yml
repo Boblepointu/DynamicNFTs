@@ -571,7 +571,7 @@ jobs:
               CONTRACT_SYMBOL: ${{ secrets.CONTRACT_SYMBOL }}
               SNOWFLAKE_URI: ${{ steps.artifacts.outputs.snowflake_uri }}
               CLOUD_URI: ${{ steps.artifacts.outputs.cloud_uri }}
-              SUN_URI: ${{ steps.artifacts.outputs.snowflake_uri }}
+              SUN_URI: ${{ steps.artifacts.outputs.sun_uri }}
               CONTRACT_URI: ${{ steps.artifacts.outputs.contract_uri }}
               LINK_CONTRACT_ADDRESS: ${{ secrets.LINK_CONTRACT_ADDRESS }}
               ORACLE_CONTRACT_ADDRESS: ${{ secrets.ORACLE_CONTRACT_ADDRESS }}

@@ -198,14 +198,6 @@ contract ERC721Facet is
         return contractUri;
     }
 
-    function getAvgTemp()
-        external
-        view
-        returns (uint256)
-    {
-        return Weather(weatherContract).getAvgTemp();
-    }
-
     /**
     * @dev A distinct URI (RFC 3986) for a given NFT.
     * @param _tokenId Id for which we want uri.
