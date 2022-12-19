@@ -72,7 +72,7 @@
                 }
 
                 const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
-                await ERC721Contract.methods.payableExclusiveMint(exclusiveTokenId, accounts[0]).send({ from: accounts[0], value: 500000000000000 })
+                await ERC721Contract.methods.payableExclusiveMint(exclusiveTokenId, accounts[0]).send({ from: account, value: 500000000000000 })
                 console.log(`Minted a new token in exclusive mode ! Adding to Metamask wallet !`)
                 const tokenId = await ERC721Contract.methods.totalSupply()
                 const tokenUri = await ERC721Contract.methods.tokenURI()
@@ -81,7 +81,7 @@
 
             const mintNonExclusive = async () => {
                 const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
-                await ERC721Contract.methods.payableNonExclusiveMint(accounts[0]).send({ from: accounts[0], value: 1000000000000000 })
+                await ERC721Contract.methods.payableNonExclusiveMint(account).send({ from: account, value: 1000000000000000 })
                 console.log(`Minted a new token in non exclusive mode ! Adding to Metamask wallet !`)
                 const tokenId = await ERC721Contract.methods.totalSupply()
                 const tokenUri = await ERC721Contract.methods.tokenURI()
