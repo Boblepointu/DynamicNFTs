@@ -3,6 +3,7 @@
         <title>
             Hello world
         </title>
+        <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
     </head>
     <body>
         Hello world
@@ -15,12 +16,14 @@
 
         <script>
             (async () => {
-                if (typeof window.ethereum === 'undefined') {
+                if (typeof window.web3 === 'undefined') {
                     console.log('MetaMask is not installed !')
                     document.getElementById("body").hidden = true
                     document.getElementById("error").hidden = false
                     return
                 }
+
+                const web3 = new Web3(web3.currentProvider)
 
                 const {
                     BACKEND_HOST
@@ -30,12 +33,17 @@
                     , NETWORK_ID
                 } = (await fetch('/runTimeVars')).json()
 
-                const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+                const abi = (await fetch('/public/abi.json')).json()
+
+                const accounts = await web3.request({ method: 'eth_requestAccounts' })
 
                 await provider.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: `0x${NETWORK_ID}`}],
-                });
+                })
+
+                const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
+                console.log(ERC721Contract)
             })()
         </script>        
     </body>
