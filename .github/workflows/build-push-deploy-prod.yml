@@ -594,4 +594,4 @@ jobs:
             uses: actions/upload-artifact@v3
             with:
               name: truffle_output
-              path: ${{ env.PROJECT_NAME }}/truffle_output
+              path: ${{ env.PROJECT_NAME }}/solidity/truffle_output
