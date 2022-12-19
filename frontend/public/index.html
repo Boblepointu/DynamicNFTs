@@ -24,6 +24,7 @@
         </div>
 
         <script>
+            let web3
             let account
             let abi
             let BACKEND_HOST
@@ -104,7 +105,7 @@
 
                 account = (await window.ethereum.request({ method: 'eth_requestAccounts' }))[0]
 
-                const web3 = new Web3(window.web3.currentProvider)
+                web3 = new Web3(window.web3.currentProvider)
                 
                 const runTimeVars = await (await fetch('/runTimeVars')).json()
 
@@ -130,9 +131,6 @@
 
                 document.getElementById("mintExclusive").onclick = mintExclusive
                 document.getElementById("mintNonExclusive").onclick = mintNonExclusive
-
-                const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
-                console.log(ERC721Contract)
             })()
         </script>        
     </body>

@@ -565,7 +565,7 @@ jobs:
               echo "contract_deployment_switch=$(cat ${{ env.PROJECT_NAME }}/contract_deployment_switch)" >> $GITHUB_OUTPUT            
 
           - name: Deploy contract
-            if: ${{ steps.artifacts.outputs.contract_deployment_switch }} == "1"
+            if: ${{ steps.artifacts.outputs.contract_deployment_switch }} != "0"
             env:
               CONTRACT_NAME: ${{ secrets.CONTRACT_NAME }}
               CONTRACT_SYMBOL: ${{ secrets.CONTRACT_SYMBOL }}
