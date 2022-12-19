@@ -566,7 +566,6 @@ jobs:
               echo "contract_deployment_switch=$(cat ${{ env.PROJECT_NAME }}/contract_deployment_switch)" >> $GITHUB_OUTPUT            
 
           - name: Deploy contract
-            if: ${{ steps.artifacts.outputs.contract_deployment_switch }} != "0"
             env:
               CONTRACT_NAME: ${{ secrets.CONTRACT_NAME }}
               CONTRACT_SYMBOL: ${{ secrets.CONTRACT_SYMBOL }}
@@ -586,10 +585,9 @@ jobs:
             run: |
               cd ${{ env.PROJECT_NAME }}/solidity
               yarn
-              bash retry.sh npx truffle migrate --reset --config ./truffle-config-CI.js
+              [[ "${{ steps.artifacts.outputs.contract_deployment_switch }}" = "1" ]] && bash retry.sh npx truffle migrate --reset --config ./truffle-config-CI.js
 
           - name: Upload artifact truffle_output
-            if: always()
             uses: actions/upload-artifact@v3
             with:
               name: truffle_output
