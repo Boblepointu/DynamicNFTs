@@ -8,6 +8,8 @@
 
 node_modules
 
+solidity/truffle_output
+solidity/yarn-error.log
 solidity/cache
 solidity/out
 solidity/conf.json
