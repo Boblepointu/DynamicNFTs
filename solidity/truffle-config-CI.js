@@ -89,7 +89,8 @@ module.exports = {
       //  websockets: true,
        provider: () => new HDWalletProvider({
         privateKeys: [ PRIVATE_KEY ],
-        providerOrUrl: RPC_URL
+        providerOrUrl: RPC_URL,
+        pollingInterval: 10000
       }),
       // provider: () => new PrivateKeyProvider(
       //   "9102c6da18031b378af9f4883b55b864ccc3acce1fbc9408821e8da0fbd0d4c9", 
