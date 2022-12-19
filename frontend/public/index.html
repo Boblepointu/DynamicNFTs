@@ -49,7 +49,7 @@
 
                 await window.ethereum.request({
                     method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: `0x${NETWORK_ID}`}],
+                    params: [{ chainId: `0x${NETWORK_ID}`}]
                 })
 
                 const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
