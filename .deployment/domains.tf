@@ -123,5 +123,5 @@ resource "aws_route53_record" "backend" {
 }
 
 output "aws_route53_record-backend" {
-  value = var.lb_dns_record_ipfs_admin
+  value = var.lb_dns_record_backend
 }
