@@ -155,6 +155,48 @@ jobs:
                 name: aws_route53_record-ipfs-admin
                 path: aws_route53_record-ipfs-admin                                
 
+    build-frontend:
+        runs-on: ubuntu-22.04
+        needs: deploy-infra
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  ref: ${{ github.ref_name }}
+                  path: ${{ env.PROJECT_NAME }}
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1-node16
+              with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: ${{ env.AWS_REGION }}
+            
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+
+            - name: Download artifact
+              uses: actions/download-artifact@v3
+              with:
+                name: aws_ecr_repository-frontend-name
+                path: /tmp/aws_ecr_repository-frontend-name
+
+            - name: Build docker image
+              run: |
+                cd ${{ env.PROJECT_NAME }}/frontend
+                docker build -t ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-frontend-name/aws_ecr_repository-frontend-name):${{ env.IMAGE_TAG }} .    
+
+            - name: Tag docker image
+              run: |
+                docker tag ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-frontend-name/aws_ecr_repository-frontend-name):${{ env.IMAGE_TAG }} ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-frontend-name/aws_ecr_repository-frontend-name):latest
+
+            - name: Push docker image
+              run: |
+                docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-frontend-name/aws_ecr_repository-frontend-name):${{ env.IMAGE_TAG }}
+                docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-frontend-name/aws_ecr_repository-frontend-name):latest
+
     build-backend:
         runs-on: ubuntu-22.04
         needs: deploy-infra
@@ -196,7 +238,77 @@ jobs:
               run: |
                 docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-backend-name/aws_ecr_repository-backend-name):${{ env.IMAGE_TAG }}
                 docker push ${{ steps.login-ecr.outputs.registry }}/$(cat /tmp/aws_ecr_repository-backend-name/aws_ecr_repository-backend-name):latest
-           
+
+    deploy-frontend:
+        runs-on: ubuntu-22.04
+        needs: build-frontend
+
+        steps:
+          - name: Download artifact aws_ecs_task_definition-frontend-name
+            uses: actions/download-artifact@v3
+            with:
+              name: aws_ecs_task_definition-frontend-name
+              path: /tmp/aws_ecs_task_definition-frontend-name
+
+          - name: Download artifact aws_ecr_repository-frontend-name
+            uses: actions/download-artifact@v3
+            with:
+              name: aws_ecr_repository-frontend-name
+              path: /tmp/aws_ecr_repository-frontend-name
+
+          - name: Download artifact aws_ecs_service-frontend-name
+            uses: actions/download-artifact@v3
+            with:
+              name: aws_ecs_service-frontend-name
+              path: /tmp/aws_ecs_service-frontend-name
+
+          - name: Download artifact aws_ecs_cluster-main-name
+            uses: actions/download-artifact@v3
+            with:
+              name: aws_ecs_cluster-main-name
+              path: /tmp/aws_ecs_cluster-main-name
+
+          - name: Configure AWS credentials
+            uses: aws-actions/configure-aws-credentials@v1-node16
+            with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: ${{ env.AWS_REGION }}
+
+          - name: Login to Amazon ECR
+            id: login-ecr
+            uses: aws-actions/amazon-ecr-login@v1              
+
+          - name: Download task definition
+            id: download-task-definition
+            run: |
+              aws ecs describe-task-definition --task-definition $(cat /tmp/aws_ecs_task_definition-frontend-name/aws_ecs_task_definition-frontend-name) --query taskDefinition > task-definition.json
+              
+
+          - name: Fill GITHUB_OUTPUT
+            id: artifacts
+            run: |
+              echo "aws_ecs_cluster-main-name=$(cat /tmp/aws_ecs_cluster-main-name/aws_ecs_cluster-main-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecs_service-frontend-name=$(cat /tmp/aws_ecs_service-frontend-name/aws_ecs_service-frontend-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecr_repository-frontend-name=$(cat /tmp/aws_ecr_repository-frontend-name/aws_ecr_repository-frontend-name)" >> $GITHUB_OUTPUT
+              echo "aws_ecs_task_definition-frontend-name=$(cat /tmp/aws_ecs_task_definition-frontend-name/aws_ecs_task_definition-frontend-name)" >> $GITHUB_OUTPUT
+
+          - name: Replace image tag in task definition
+            id: fillin-task-definition
+            uses: aws-actions/amazon-ecs-render-task-definition@v1
+            with:
+              task-definition: task-definition.json
+              container-name: ${{ steps.artifacts.outputs.aws_ecs_task_definition-frontend-name }}
+              image: ${{ steps.login-ecr.outputs.registry }}/${{ steps.artifacts.outputs.aws_ecr_repository-frontend-name }}:${{ env.IMAGE_TAG }}
+
+          - name: Deploying task definition
+            uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+            with:
+              task-definition: ${{ steps.fillin-task-definition.outputs.task-definition }}
+              service: ${{ steps.artifacts.outputs.aws_ecs_service-frontend-name }}
+              cluster: ${{ steps.artifacts.outputs.aws_ecs_cluster-main-name }}
+              wait-for-service-stability: true
+
     deploy-backend:
         runs-on: ubuntu-22.04
         needs: build-backend
@@ -422,6 +534,7 @@ jobs:
         needs: 
           - generate-and-upload-nfts-to-ipfs
           - deploy-backend
+          - deploy-frontend
 
         steps:
           - name: Checkout repository
