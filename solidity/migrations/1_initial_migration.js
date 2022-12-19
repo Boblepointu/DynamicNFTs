@@ -89,7 +89,6 @@ module.exports = async (deployer) => {
   const DiamondInitInstance = new web3.eth.Contract(DiamondInit._json.abi, DiamondInit.address)
   const encodedInitFunctionCall = DiamondInitInstance.methods.init().encodeABI()
   console.log(`Got back encoded init function call.`)
-  // console.log(encodedInitFunctionCall)
   
   console.log(`Calling diamondCut func with encoded init and cut array.`)
   const DiamondCutFacetInstance = await DiamondCutFacet.at(Diamond.address)//new web3.eth.Contract(DiamondCutFacet._json.abi, DiamondCutFacet.address)
