@@ -585,7 +585,7 @@ jobs:
             run: |
               cd ${{ env.PROJECT_NAME }}/solidity
               yarn
-              [[ "${{ steps.artifacts.outputs.contract_deployment_switch }}" = "1" ]] && bash retry.sh npx truffle migrate --reset --config ./truffle-config-CI.js
+              if [ "${{ steps.artifacts.outputs.contract_deployment_switch }}" == "1" ]; then bash retry.sh npx truffle migrate --reset --config ./truffle-config-CI.js; fi
 
           - name: Upload artifact truffle_output
             uses: actions/upload-artifact@v3
