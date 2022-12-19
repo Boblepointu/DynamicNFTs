@@ -32,21 +32,14 @@ module.exports = async (deployer) => {
 
   console.log(`Deploying DiamondCutFacet`)
   await deployer.deploy(DiamondCutFacet)
-  // console.log(DiamondCutFacet)
-  // console.log(DiamondCutFacet._json)
-  // console.log(DiamondCutFacet._json.abi[0])
   console.log(`DiamondCutFacet deployed: ${DiamondCutFacet.address}`)
 
   console.log(`Deploying Diamond`)
   await deployer.deploy(Diamond, accounts[0], DiamondCutFacet.address)
-  // console.log(Diamond)
-  // console.log(accounts[0], DiamondCutFacet.address)
   console.log(`Diamond deployed: ${Diamond.address}`)
 
   console.log(`Deploying DiamondInit`)
   await deployer.deploy(DiamondInit)
-  // console.log(DiamondInit)
-  // console.log(accounts[0], DiamondInit.address)
   console.log(`DiamondInit deployed: ${DiamondInit.address}`)
 
   console.log(`Deploying Facets`)
@@ -138,9 +131,4 @@ module.exports = async (deployer) => {
   console.log(`Setted receivers of the royalties`)
   await ERC2981FacetInstance.setDispatchContract(Diamond.address)
   console.log(`Set dispatch contract address to Diamond itself`)
-
-
-
-  // await ERC721FacetInstance.mintWeather(accounts[0])
-  // console.log(`Minted a new nft, for ${accounts[0]}`)
 }
