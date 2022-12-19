@@ -101,3 +101,8 @@ variable "link_contract_address" {
   type        = string
   description = "The address of the ERC20 link contract"
 }
+
+variable "diamond_contract_address" {
+  type        = string
+  description = "The address of the diamond contract"
+}

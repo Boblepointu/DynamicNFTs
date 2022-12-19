@@ -48,6 +48,7 @@ jobs:
                 TF_VAR_weather_contract_address: ${{ secrets.WEATHER_CONTRACT_ADDRESS }}
                 TF_VAR_link_fee: ${{ secrets.LINK_FEE }}
                 TF_VAR_link_contract_address: ${{ secrets.LINK_CONTRACT_ADDRESS }}
+                TF_VAR_diamond_contract_address: ${{ secrets.DIAMOND_CONTRACT_ADDRESS }}
               run: terraform -chdir=${{ env.PROJECT_NAME }}/.deployment apply -var-file="variables.tfvars" -auto-approve
 
             - name: Recover Terraform outputs

@@ -513,6 +513,10 @@ resource "aws_ecs_task_definition" "backend" {
         {
           name  = "LINK_CONTRACT_ADDRESS"
           value = var.link_contract_address
+        },
+        {
+          name  = "DIAMOND_CONTRACT_ADDRESS"
+          value = var.diamond_contract_address
         }
       ]
       secrets = [

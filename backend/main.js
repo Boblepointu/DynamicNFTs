@@ -10,6 +10,7 @@ const {
   , WEATHER_CONTRACT_ADDRESS
   , LINK_FEE
   , LINK_CONTRACT_ADDRESS
+  , DIAMOND_CONTRACT_ADDRESS
 } = process.env
 
 let avgTempPlus1000 = 1000
@@ -93,6 +94,13 @@ const main = async () => {
       }))
     })
     
+    app.get('/contractsData', (req, res) => {
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({
+        diamonContractAddress: DIAMOND_CONTRACT_ADDRESS
+      }))
+    })
+
     app.listen(port, () => {
       console.log(`Weather app listening on port ${port}`)
     })
