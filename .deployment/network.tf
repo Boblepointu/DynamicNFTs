@@ -284,7 +284,7 @@ resource "aws_lb_listener" "frontend-http" {
 resource "time_sleep" "wait-after-frontend-cert-creation" {
   depends_on = [ aws_acm_certificate.frontend ]
 
-  create_duration = "60s"
+  create_duration = "240s"
 }
 
 resource "aws_lb_listener" "frontend-https" {
@@ -351,7 +351,7 @@ resource "aws_lb_listener" "ipfs-http" {
 resource "time_sleep" "wait-after-ipfs-cert-creation" {
   depends_on = [ aws_acm_certificate.ipfs ]
 
-  create_duration = "60s"
+  create_duration = "240s"
 }
 
 resource "aws_lb_listener" "ipfs-https" {
@@ -415,7 +415,7 @@ resource "aws_lb_listener" "ipfs-admin-http" {
 resource "time_sleep" "wait-after-ipfs-admin-cert-creation" {
   depends_on = [ aws_acm_certificate.ipfs-admin ]
 
-  create_duration = "60s"
+  create_duration = "240s"
 }
 
 resource "aws_lb_listener" "ipfs-admin-https" {
@@ -483,7 +483,7 @@ resource "aws_lb_listener" "backend-http" {
 resource "time_sleep" "wait-after-backend-cert-creation" {
   depends_on = [ aws_acm_certificate.backend ]
 
-  create_duration = "60s"
+  create_duration = "240s"
 }
 
 resource "aws_lb_listener" "backend-https" {
