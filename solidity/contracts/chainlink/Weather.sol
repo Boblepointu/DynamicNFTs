@@ -50,7 +50,11 @@ contract Weather is ChainlinkClient, ConfirmedOwner {
         serverUrl = _serverUrl;
     }
 
-    function getAvgTemp() public view returns(uint256){
+    function setAvgTemp(uint256 _avgTmp) public onlyOwner{
+        avgTemp = _avgTmp;
+    }
+
+    function getAvgTemp() public returns(uint256){
         return avgTemp;
     }
 
