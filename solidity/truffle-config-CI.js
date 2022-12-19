@@ -81,8 +81,8 @@ module.exports = {
       confirmations: 0,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets )
-      maxFeePerGas:5500000,
-      maxPriorityFeePerGas:5500000,
+      maxFeePerGas:55000000,
+      maxPriorityFeePerGas:55000000,
       gasLimit: 35000000
     },
     // Useful for private networks
