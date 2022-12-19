@@ -23,7 +23,7 @@ contract Dispatch is GenericInheritance
     * @param _receiverOne The first address to transfer 50% to.
     * @param _receiverTwo The second address to transfer 50% to.
     */
-    function setReceivers(address _receiverOne, address _receiverTwo) external
+    function setReceivers(address _receiverOne, address _receiverTwo) external onlyOwner
     {
         LibDiamond.setReceivers(_receiverOne, _receiverTwo);
     }
