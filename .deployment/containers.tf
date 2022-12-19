@@ -377,6 +377,10 @@ resource "aws_ecs_task_definition" "frontend" {
         {
           name  = "BACKEND_HOST"
           value = var.lb_dns_record_backend
+        },
+        {
+          name  = "NETWORK_ID"
+          value = var.network_id
         }
       ]
 

@@ -6,5 +6,37 @@
     </head>
     <body>
         Hello world
+        <div id="error">
+            You don't have metamask on your browser ! Install it before continuing.
+        </div>
+        <div id="body">
+            
+        </div>
+
+        <script>
+            (async () => {
+                if (typeof window.ethereum === 'undefined') {
+                    console.log('MetaMask is not installed !')
+                    document.getElementById("body").hidden = true
+                    document.getElementById("error").hidden = false
+                    return
+                }
+
+                const {
+                    BACKEND_HOST
+                    , WEATHER_CONTRACT_ADDRESS
+                    , DIAMOND_CONTRACT_ADDRESS
+                    , EXCLUSIVE_CONTRACT_ADDRESS
+                    , NETWORK_ID
+                } = (await fetch('/runTimeVars')).json()
+
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+
+                await provider.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${NETWORK_ID}`}],
+                });
+            })()
+        </script>        
     </body>
 </html>

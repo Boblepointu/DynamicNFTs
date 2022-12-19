@@ -5,6 +5,7 @@ const {
     , WEATHER_CONTRACT_ADDRESS
     , DIAMOND_CONTRACT_ADDRESS
     , EXCLUSIVE_CONTRACT_ADDRESS
+    , NETWORK_ID
 } = process.env
 
 const main = async () => {
@@ -18,6 +19,7 @@ const main = async () => {
             , WEATHER_CONTRACT_ADDRESS
             , DIAMOND_CONTRACT_ADDRESS
             , EXCLUSIVE_CONTRACT_ADDRESS
+            , NETWORK_ID
         }))
     })
 

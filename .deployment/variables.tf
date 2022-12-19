@@ -111,3 +111,8 @@ variable "exclusive_contract_address" {
   type        = string
   description = "The address of the exclusive contract, to be able to mint in advance nfts"
 }
+
+variable "network_id" {
+  type        = string
+  description = "The network id to operate"
+}
