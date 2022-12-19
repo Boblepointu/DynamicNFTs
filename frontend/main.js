@@ -22,13 +22,13 @@ const main = async () => {
     })
 
     app.get('/healthcheck', (req, res) => {
-      res.sendStatus(200)
+        res.sendStatus(200)
     })
 
-    app.use(express.static('public'))
+    app.use(Express.static('public'))
 
     app.listen(port, () => {
-    console.log(`Frontend app listening on port ${port}`)
+        console.log(`Frontend app listening on port ${port}`)
     })
 }
 
