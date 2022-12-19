@@ -15,6 +15,41 @@
         </div>
 
         <script>
+            let account
+            let abi
+            let BACKEND_HOST
+            let WEATHER_CONTRACT_ADDRESS
+            let DIAMOND_CONTRACT_ADDRESS
+            let EXCLUSIVE_CONTRACT_ADDRESS
+            let NETWORK_ID
+
+            const addTokenToMetamask = async (tokenId) => {
+                await window.ethereum.request({
+                    method: 'wallet_watchAsset',
+                    params: {
+                        type: 'ERC721', // Initially only supports ERC20, but eventually more!
+                        options: {
+                            address: DIAMOND_CONTRACT_ADDRESS, // The address that the token is at.
+                            symbol: 'WTH', // A ticker symbol or shorthand, up to 5 chars.
+                            tokenId
+                        },
+                    },
+                })
+            }
+
+            const mintExclusive = async tokenIdInExclusiveContract => {
+                const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
+                await ERC721Contract.methods.payableExclusiveMint(tokenIdInExclusiveContract, accounts[0]).send({ from: accounts[0], value: 500000000000000 })
+                console.log(`Minted a new token in exclusive mode ! Adding to Metamask wallet !`)
+            }
+
+            const mintNonExclusive = async () => {
+                const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
+                await ERC721Contract.methods.payableNonExclusiveMint(accounts[0]).send({ from: accounts[0], value: 1000000000000000 })
+                console.log(`Minted a new token in non exclusive mode ! Adding to Metamask wallet !`)
+            }
+
+
             (async () => {
                 document.getElementById("body").hidden = true
                 document.getElementById("error").hidden = true
@@ -29,17 +64,17 @@
                 document.getElementById("body").hidden = false
                 document.getElementById("error").hidden = true
 
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+                account = (await window.ethereum.request({ method: 'eth_requestAccounts' }))[0]
 
                 const web3 = new Web3(window.web3.currentProvider)
                 
-                const {
-                    BACKEND_HOST
-                    , WEATHER_CONTRACT_ADDRESS
-                    , DIAMOND_CONTRACT_ADDRESS
-                    , EXCLUSIVE_CONTRACT_ADDRESS
-                    , NETWORK_ID
-                } = await (await fetch('/runTimeVars')).json()
+                const runTimeVars = await (await fetch('/runTimeVars')).json()
+
+                BACKEND_HOST = runTimeVars.BACKEND_HOST
+                WEATHER_CONTRACT_ADDRESS = runTimeVars.WEATHER_CONTRACT_ADDRESS
+                DIAMOND_CONTRACT_ADDRESSs = runTimeVars.DIAMOND_CONTRACT_ADDRESSs
+                EXCLUSIVE_CONTRACT_ADDRESS = runTimeVars.EXCLUSIVE_CONTRACT_ADDRESS
+                NETWORK_ID = runTimeVars.NETWORK_ID
 
                 console.log(`Fetched run time vars !`)
 
