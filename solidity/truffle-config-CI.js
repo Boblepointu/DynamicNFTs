@@ -20,6 +20,8 @@ module.exports = {
         nonceTracker.setEngine(wallet.engine)
         return wallet
       },
+      // maxFeePerGas:55000000,
+      // maxPriorityFeePerGas:55000000,
       confirmations: 0,
       skipDryRun: true,
       network_id: parseInt(NETWORK_ID)
