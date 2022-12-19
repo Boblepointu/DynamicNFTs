@@ -116,3 +116,8 @@ variable "network_id" {
   type        = string
   description = "The network id to operate"
 }
+
+variable "sale_start_timestamp" {
+  type        = string
+  description = "The timestamp at which the sale start"
+}

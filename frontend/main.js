@@ -6,6 +6,8 @@ const {
     , DIAMOND_CONTRACT_ADDRESS
     , EXCLUSIVE_CONTRACT_ADDRESS
     , NETWORK_ID
+    , IPFS_HOST
+    , SALE_START_TIMESTAMP
 } = process.env
 
 const main = async () => {
@@ -20,6 +22,8 @@ const main = async () => {
             , DIAMOND_CONTRACT_ADDRESS
             , EXCLUSIVE_CONTRACT_ADDRESS
             , NETWORK_ID
+            , IPFS_HOST
+            , SALE_START_TIMESTAMP
         }))
     })
 

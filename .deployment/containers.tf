@@ -385,6 +385,10 @@ resource "aws_ecs_task_definition" "frontend" {
         {
           name  = "IPFS_HOST"
           value = var.lb_dns_record_ipfs
+        },
+        {
+          name  = "SALE_START_TIMESTAMP"
+          value = var.sale_start_timestamp
         }
       ]
 

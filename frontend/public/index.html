@@ -4,22 +4,98 @@
             Hello world
         </title>
         <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     </head>
     <body>
-        Hello world
-        <div id="error">
+        <div id="error" class="alert alert-danger text-center" role="alert">
             You don't have metamask on your browser ! Install it before continuing.
         </div>
+        <div class="d-flex justify-content-center">
+            <div class="container" id="spinner">
+                <div class="row mb-4">
+                    <span class="col-1"></span>
+                </div>
+                <div class="row mb-4">
+                    <span class="col-1"></span>
+                    <h1 class="col-10 text-center">...Loading...</h1>
+                </div>   
+                <div class="row mb-4">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                      </div>
+                </div>                       
+
+            </div>
+        </div>
         <div id="body">
-            <button type="button" id="mintExclusive" value="Mint in exclusive mode">Mint in exclusive mode</button>
-            <input type="text" id="mintExclusiveTokenId" /><br />
-            <button type="button" id="mintNonExclusive" value="Mint in non exclusive mode">Mint in non exclusive mode</button><br />
-            <div id="tokenDisplay">
-                <label>Contract address : </label><span id="contractAddress"></span>
-                <label>Token id : </label><span id="tokenId"></span>
-                <label>Token name : </label><span id="tokenName"></span>
-                <label>Token description : </label><span id="tokenDescription"></span>
-                <img id="tokenImage" src="" />
+            <div class="container">
+                <div class="row mb-2">
+                    <span class="col-1"></span>
+                    <h1 id="title" class="col-10 text-center"></h1>
+                </div>
+
+                <div class="row mb-2">
+                    <span class="col-1"></span>
+                    <h3 id="titleExclusive" class="col-10 text-center"></h3>
+                </div>
+                <div class="row mb-2">
+                    <span class="col-1"></span>
+                    <h4 id="titleExclusive" class="col-10 text-center">
+                        Enter the token ID you own below <br /> 
+                        and click the button !
+                    </h4>
+                </div>
+                <div class="row mb-2">
+                    <span class="col-1"></span>
+                    <div class="col-10">
+                        <input type="text" 
+                        id="mintExclusiveTokenId"
+                        class="form-control" 
+                        placeholder="Token id in the exclusive collection"
+                    />
+                    </div>
+
+                </div>
+                <div class="row mb-4">
+                    <span class="col-1"></span>
+                    <button type="button" id="mintExclusive" class="btn btn-primary col-10 ">
+                        Mint in exclusive mode, price is 0.0005 ETH
+                    </button>
+                </div>
+
+                <div class="row mb-2">
+                    <span class="col-1"></span>
+                    <h3 id="titleNonExclusive" class="col-10 text-center">
+                        You do not own any specific token. You can mint anyway <br /> 
+                        click the button below
+                    </h3>
+                </div>
+
+                <div class="row mb-4">
+                    <span class="col-1"></span>
+                    <button type="button" id="mintNonExclusive" class="btn btn-primary col-10">
+                        Mint in non exclusive mode, price is 0.001 ETH
+                    </button>
+                </div>
+
+            </div>
+
+            <div id="tokenDisplay" class="container">
+                <div class="row justify-content-center">
+                    <div class="card col-4">
+                        <img id="tokenImage" class="card-img-top" src="" />
+                        <div class="card-body text-center">
+                            <h5 class="card-title" id="tokenName"></h5>
+                            <p class="card-text" id="tokenDescription"></p>
+                            <a href="#" target=”_blank” id="tokenOpenseaLink" class="btn btn-primary col-12">Open in Opensea</a>
+                          </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -27,68 +103,85 @@
             let web3
             let account
             let abi
+            let ipfsGatewayUrl
             let BACKEND_HOST
             let IPFS_HOST
             let WEATHER_CONTRACT_ADDRESS
             let DIAMOND_CONTRACT_ADDRESS
             let EXCLUSIVE_CONTRACT_ADDRESS
             let NETWORK_ID
-            let ipfsGatewayUrl
+            let SALE_START_TIMESTAMP
 
-            const addTokenToMetamask = async (tokenId) => {
-                await window.ethereum.request({
-                    method: 'wallet_watchAsset',
-                    params: {
-                        type: 'ERC721', // Initially only supports ERC20, but eventually more!
-                        options: {
-                            address: DIAMOND_CONTRACT_ADDRESS, // The address that the token is at.
-                            symbol: 'WTH', // A ticker symbol or shorthand, up to 5 chars.
-                            tokenId
-                        },
-                    },
-                })
-            }
-
-            const displayMintedNft = async tokenUri => {
+            const displayMintedNft = async (tokenUri, tokenId) => {
                 document.getElementById("error").hidden = true
                 const CID = tokenUri.replace('ipfs://', '')
                 const tokenMetadata = await (await fetch(`${ipfsGatewayUrl}${CID}`)).json()
                 const tokenImage = `${ipfsGatewayUrl}${tokenMetadata.image.replace('ipfs://', '')}`
-                document.getElementById("contractAddress").innerHTML = DIAMOND_CONTRACT_ADDRESS
-                document.getElementById("tokenId").innerHTML = tokenId
-                document.getElementById("tokenName").innerHTML = tokenMetadata.name
-                document.getElementById("tokenDescription").innerHTML = tokenMetadata.description
-                document.getElementById("tokenImage").setAttribute(src, tokenImage)
+                document.getElementById("tokenName").innerHTML = `#${tokenId} ${tokenMetadata.name}`
+                document.getElementById("tokenDescription").innerHTML = `${DIAMOND_CONTRACT_ADDRESS} <br /> ${tokenMetadata.description}`
+                document.getElementById("tokenImage").setAttribute('src', tokenImage)
+                document.getElementById("tokenOpenseaLink").setAttribute('href', `https://testnets.opensea.io/assets/goerli/${DIAMOND_CONTRACT_ADDRESS.toLowerCase()}/${tokenId}`)
                 document.getElementById("tokenDisplay").hidden = false
             }
 
             const mintExclusive = async () => {
-                const exclusiveTokenId = document.getElementById("mintExclusiveTokenId").value
+                document.getElementById("spinner").hidden = false
                 document.getElementById("error").hidden = true
-                if(exclusiveTokenId === ''){
-                    document.getElementById("error").innerHTML = "Please specify before the tokenId you own in the exclusive collection !"
-                    document.getElementById("error").hidden = false
-                    return
-                }
+                document.getElementById("body").hidden = true
+                try{
+                    const exclusiveTokenId = document.getElementById("mintExclusiveTokenId").value
+                    document.getElementById("error").hidden = true
+                    if(exclusiveTokenId === ''){
+                        document.getElementById("error").innerHTML = "Please specify before the tokenId you own in the exclusive collection !"
+                        document.getElementById("error").hidden = false
+                        document.getElementById("spinner").hidden = true
+                        document.getElementById("body").hidden = false
+                        return
+                    }
 
-                const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
-                await ERC721Contract.methods.payableExclusiveMint(exclusiveTokenId, accounts[0]).send({ from: account, value: 500000000000000 })
-                console.log(`Minted a new token in exclusive mode ! Adding to Metamask wallet !`)
-                const tokenId = await ERC721Contract.methods.totalSupply()
-                const tokenUri = await ERC721Contract.methods.tokenURI()
-                await displayMintedNft(tokenUri)
+                    const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
+                    await ERC721Contract.methods.payableExclusiveMint(exclusiveTokenId, account).send({ from: account, value: 500000000000000 })
+                    console.log(`Minted a new token in exclusive mode ! Adding to Metamask wallet !`)
+                    const tokenId = await ERC721Contract.methods.totalSupply().call()-1
+                    const tokenUri = await ERC721Contract.methods.tokenURI(tokenId).call()
+                    await displayMintedNft(tokenUri, tokenId)
+                    document.getElementById("error").hidden = true
+                    document.getElementById("spinner").hidden = true
+                    document.getElementById("body").hidden = false
+                }catch(err){
+                    console.log(err)
+                    document.getElementById("error").innerHTML = `An error occured ! ${err.message}`
+                    document.getElementById("error").hidden = false
+                    document.getElementById("spinner").hidden = true
+                    document.getElementById("body").hidden = false
+                }
             }
 
             const mintNonExclusive = async () => {
-                const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
-                await ERC721Contract.methods.payableNonExclusiveMint(account).send({ from: account, value: 1000000000000000 })
-                console.log(`Minted a new token in non exclusive mode ! Adding to Metamask wallet !`)
-                const tokenId = await ERC721Contract.methods.totalSupply()
-                const tokenUri = await ERC721Contract.methods.tokenURI()
-                await displayMintedNft(tokenUri)
+                document.getElementById("spinner").hidden = false
+                document.getElementById("error").hidden = true
+                document.getElementById("body").hidden = true
+                try{                
+                    const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
+                    await ERC721Contract.methods.payableNonExclusiveMint(account).send({ from: account, value: 1000000000000000 })
+                    console.log(`Minted a new token in non exclusive mode ! Adding to Metamask wallet !`)
+                    const tokenId = await ERC721Contract.methods.totalSupply().call()-1
+                    const tokenUri = await ERC721Contract.methods.tokenURI(tokenId).call()
+                    await displayMintedNft(tokenUri, tokenId)
+                    document.getElementById("error").hidden = true
+                    document.getElementById("spinner").hidden = true
+                    document.getElementById("body").hidden = false
+                }catch(err){
+                    console.log(err)
+                    document.getElementById("error").innerHTML = `An error occured ! ${err.message}`
+                    document.getElementById("error").hidden = false
+                    document.getElementById("spinner").hidden = true
+                    document.getElementById("body").hidden = false
+                }                    
             }
 
             (async () => {
+                document.getElementById("spinner").hidden = false
                 document.getElementById("body").hidden = true
                 document.getElementById("tokenDisplay").hidden = true
                 document.getElementById("error").hidden = true
@@ -97,10 +190,10 @@
                     console.log('MetaMask is not installed !')
                     document.getElementById("body").hidden = true
                     document.getElementById("error").hidden = false
+                    document.getElementById("spinner").hidden = true
                     return
                 }
 
-                document.getElementById("body").hidden = false
                 document.getElementById("error").hidden = true
 
                 account = (await window.ethereum.request({ method: 'eth_requestAccounts' }))[0]
@@ -112,9 +205,20 @@
                 BACKEND_HOST = runTimeVars.BACKEND_HOST
                 IPFS_HOST = runTimeVars.IPFS_HOST
                 WEATHER_CONTRACT_ADDRESS = runTimeVars.WEATHER_CONTRACT_ADDRESS
-                DIAMOND_CONTRACT_ADDRESSs = runTimeVars.DIAMOND_CONTRACT_ADDRESSs
+                DIAMOND_CONTRACT_ADDRESS = runTimeVars.DIAMOND_CONTRACT_ADDRESS
                 EXCLUSIVE_CONTRACT_ADDRESS = runTimeVars.EXCLUSIVE_CONTRACT_ADDRESS
                 NETWORK_ID = runTimeVars.NETWORK_ID
+                SALE_START_TIMESTAMP = runTimeVars.SALE_START_TIMESTAMP
+
+                document.getElementById("title").innerHTML = `Welcome to the mint ! <br /> You will be able to mint starting of ${moment.unix(SALE_START_TIMESTAMP).format("MM/DD/YYYY HH:mm")}`
+
+                if((new Date()).getTime()/1000 < SALE_START_TIMESTAMP-30)
+                    document.getElementById("body").hidden = true
+                else
+                    document.getElementById("title").innerHTML = `Welcome to the mint ! <br /> You can mint as long as there is some left !`
+
+                document.getElementById("titleExclusive").innerHTML = `You own a token in the collection at address : ${EXCLUSIVE_CONTRACT_ADDRESS}`
+                // document.getElementById("inputLabelExclusiveCollectionTokenId").innerHTML = `Owned tokenId in the exclusive collection (${EXCLUSIVE_CONTRACT_ADDRESS}) : `
 
                 ipfsGatewayUrl = `https://${IPFS_HOST}/ipfs/`
 
@@ -131,6 +235,9 @@
 
                 document.getElementById("mintExclusive").onclick = mintExclusive
                 document.getElementById("mintNonExclusive").onclick = mintNonExclusive
+
+                document.getElementById("spinner").hidden = true
+                document.getElementById("body").hidden = false
             })()
         </script>        
     </body>
