@@ -101,7 +101,7 @@ module.exports = async (deployer) => {
 
   const ERC721FacetInstance = await ERC721Facet.at(Diamond.address)
   const ERC2981FacetInstance = await ERC2981Facet.at(Diamond.address)
-  const DispatchFacetInstance = await DispatchFacet.at(Diamond.address)
+  const DispatchInstance = await Diamond.at(Diamond.address)
   const WeatherInstance = await Weather.at(Weather.address)
 
   // initting diamond
@@ -126,7 +126,7 @@ module.exports = async (deployer) => {
   console.log(`Requested temperature for today ${LINK_CONTRACT_ADDRESS}, oracle address ${ORACLE_CONTRACT_ADDRESS}, and a fixed fee of ${LINK_FEE} `)
   await ERC2981FacetInstance.initSupportedInterfaces()
   console.log(`Initted supported interfaces to ERC2981`)
-  await DispatchFacetInstance.setReceivers('0x4A5BFf849c4e790eBcaC8dE611c10EDe7a9e7075', '0x8d58362182EE5546AC43b328C19fCD3E65Fc5417')
+  await DispatchInstance.setReceivers('0x4A5BFf849c4e790eBcaC8dE611c10EDe7a9e7075', '0x8d58362182EE5546AC43b328C19fCD3E65Fc5417')
   console.log(`Setted receivers of the royalties`)
   await ERC2981FacetInstance.setDispatchContract(Diamond.address)
   console.log(`Set dispatch contract address to Diamond itself`)
