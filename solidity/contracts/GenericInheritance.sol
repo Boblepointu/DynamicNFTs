@@ -28,7 +28,7 @@ contract GenericInheritance is DiamondLoupeSubFacet {
         ds.supportedInterfaces[type(IERC165).interfaceId] = true; // ERC165 SupportInterface
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true; // EIP2535 DiamondLoup
         ds.supportedInterfaces[type(IERC173).interfaceId] = true; // ERC173 Ownable
-        ds.supportedInterfaces[type(IERC2981).interfaceId] = true; // ERC2981
+        ds.supportedInterfaces[type(IERC2981).interfaceId] = true; // ERC2981 Royalties
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true; // EIP2535 DiamondLoup
     }
 
