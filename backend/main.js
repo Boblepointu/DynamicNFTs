@@ -11,6 +11,7 @@ const {
   , LINK_FEE
   , LINK_CONTRACT_ADDRESS
   , DIAMOND_CONTRACT_ADDRESS
+  , EXCLUSIVE_CONTRACT_ADDRESS
 } = process.env
 
 let avgTempPlus1000 = 1000
@@ -98,6 +99,7 @@ const main = async () => {
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify({
         diamonContractAddress: DIAMOND_CONTRACT_ADDRESS
+        , exclusiveContractAddress: EXCLUSIVE_CONTRACT_ADDRESS
       }))
     })
 
