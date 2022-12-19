@@ -282,7 +282,10 @@ resource "aws_lb_listener" "frontend-http" {
 }
 
 resource "time_sleep" "wait-after-frontend-cert-creation" {
-  depends_on = [ aws_acm_certificate.frontend ]
+  depends_on = [ 
+    aws_acm_certificate.frontend, 
+    aws_route53_record.validation_frontend     
+  ]
 
   create_duration = "240s"
 }
@@ -349,7 +352,10 @@ resource "aws_lb_listener" "ipfs-http" {
 }
 
 resource "time_sleep" "wait-after-ipfs-cert-creation" {
-  depends_on = [ aws_acm_certificate.ipfs ]
+  depends_on = [ 
+    aws_acm_certificate.ipfs, 
+    aws_route53_record.validation_ipfs     
+  ]
 
   create_duration = "240s"
 }
@@ -413,7 +419,10 @@ resource "aws_lb_listener" "ipfs-admin-http" {
 }
 
 resource "time_sleep" "wait-after-ipfs-admin-cert-creation" {
-  depends_on = [ aws_acm_certificate.ipfs-admin ]
+  depends_on = [ 
+    aws_acm_certificate.ipfs-admin, 
+    aws_route53_record.validation_ipfs_admin
+  ]
 
   create_duration = "240s"
 }
@@ -481,7 +490,10 @@ resource "aws_lb_listener" "backend-http" {
 }
 
 resource "time_sleep" "wait-after-backend-cert-creation" {
-  depends_on = [ aws_acm_certificate.backend ]
+  depends_on = [ 
+    aws_acm_certificate.backend, 
+    aws_route53_record.validation_backend 
+  ]
 
   create_duration = "240s"
 }
@@ -522,59 +534,3 @@ resource "aws_lb_target_group" "backend" {
     create_before_destroy = true
   }
 }
-
-# resource "aws_lb" "chainlink" {
-#   name               = "${var.project_name}-chainlink-${var.environment}"
-#   internal           = false
-#   load_balancer_type = "application"
-#   security_groups    = [ aws_security_group.lb-chainlink.id ]
-
-#   subnets            = data.aws_subnets.main.ids
-# }
-
-# resource "aws_lb_listener" "chainlink-http" {
-#   load_balancer_arn = aws_lb.chainlink.arn
-#   port              = 80
-#   protocol          = "HTTP"
-
-#   default_action {
-#     type = "redirect"
-
-#     redirect {
-#       port        = "443"
-#       protocol    = "HTTPS"
-#       status_code = "HTTP_301"
-#     }
-#   }
-# }
-
-# resource "aws_lb_listener" "chainlink-https" {
-#   load_balancer_arn = aws_lb.chainlink.arn
-
-#   port            = 443
-#   protocol        = "HTTPS"
-#   ssl_policy      = "ELBSecurityPolicy-2016-08"
-#   certificate_arn = aws_acm_certificate.chainlink.arn
-
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.chainlink.arn
-#   }
-# }
-
-# resource "aws_lb_target_group" "chainlink" {
-#   name                 = "${var.project_name}-chainlink-${var.environment}"
-#   port                 = 6688
-#   protocol             = "HTTP"
-#   target_type          = "ip"
-#   vpc_id               = data.aws_vpc.main.id
-#   deregistration_delay = 5
-#   health_check {
-#     port              = 6688    
-#     enabled           = true
-#     healthy_threshold = 2
-#     interval          = 5
-#     timeout           = 3
-#     path              = "/healthcheck"
-#   }
-# }
