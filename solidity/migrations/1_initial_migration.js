@@ -136,7 +136,6 @@ module.exports = async (deployer) => {
   await ERC2981FacetInstance.initSupportedInterfaces()
   console.log(`Initted supported interfaces to ERC2981`)
   await DispatchFacetInstance.setReceivers('0x4A5BFf849c4e790eBcaC8dE611c10EDe7a9e7075', '0x8d58362182EE5546AC43b328C19fCD3E65Fc5417')
-  // await DispatchFacetInstance.setReceivers('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266')
   console.log(`Setted receivers of the royalties`)
   await ERC2981FacetInstance.setDispatchContract(Diamond.address)
   console.log(`Set dispatch contract address to Diamond itself`)

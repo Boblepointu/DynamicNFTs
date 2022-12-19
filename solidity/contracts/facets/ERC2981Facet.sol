@@ -19,9 +19,9 @@ contract ERC2981Facet is
     * @dev Set dispatch contract
     * @param _dispatchContract The contract where to send the funds, to be able to dispatch them.
     */
-    function setDispatchContract(address payable _dispatchContract) external onlyOwner
+    function setDispatchContract(address _dispatchContract) external onlyOwner
     {
-        dispatchContract = _dispatchContract;
+        dispatchContract = payable(_dispatchContract);
     }
 
     /// @notice Called with the sale price to determine how much royalty
