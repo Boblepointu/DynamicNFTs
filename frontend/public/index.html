@@ -16,14 +16,16 @@
 
         <script>
             (async () => {
-                if (typeof window.web3 === 'undefined') {
+                if (typeof window.ethereum === 'undefined') {
                     console.log('MetaMask is not installed !')
                     document.getElementById("body").hidden = true
                     document.getElementById("error").hidden = false
                     return
                 }
 
-                const web3 = new Web3(web3.currentProvider)
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+
+                const web3 = new Web3(window.ethereum.currentProvider)
 
                 const {
                     BACKEND_HOST
@@ -35,9 +37,7 @@
 
                 const abi = (await fetch('/public/abi.json')).json()
 
-                const accounts = await web3.request({ method: 'eth_requestAccounts' })
-
-                await web3.request({
+                await window.ethereum.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: `0x${NETWORK_ID}`}],
                 })
