@@ -47,7 +47,7 @@ contract Weather is ChainlinkClient, ConfirmedOwner {
         serverUrl = _serverUrl;
     }
 
-    function setServerUrl(string calldata _serverUrl) public ConfirmedOwner(msg.sender){
+    function setServerUrl(string calldata _serverUrl) public onlyOwner{
         serverUrl = _serverUrl;
     }
 
