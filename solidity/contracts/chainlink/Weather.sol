@@ -44,7 +44,6 @@ contract Weather is ChainlinkClient, ConfirmedOwner {
         setChainlinkToken(_link);
         setChainlinkOracle(_oracle);
         fee = _fee;
-        serverUrl = _serverUrl;
     }
 
     function setServerUrl(string calldata _serverUrl) public onlyOwner{
