@@ -104,7 +104,7 @@ const main = async () => {
     })
 
     app.listen(port, () => {
-      console.log(`Weather app listening on port ${port}`)
+      console.log(`Backend app listening on port ${port}`)
     })
 }
 

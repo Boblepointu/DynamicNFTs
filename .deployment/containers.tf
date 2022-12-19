@@ -361,6 +361,25 @@ resource "aws_ecs_task_definition" "frontend" {
           hostPort      = 3000
         }
       ]
+      environment = [
+        {
+          name  = "WEATHER_CONTRACT_ADDRESS"
+          value = var.weather_contract_address
+        },
+        {
+          name  = "DIAMOND_CONTRACT_ADDRESS"
+          value = var.diamond_contract_address
+        },
+        {
+          name  = "EXCLUSIVE_CONTRACT_ADDRESS"
+          value = var.exclusive_contract_address
+        },
+        {
+          name  = "BACKEND_HOST"
+          value = var.lb_dns_record_backend
+        }
+      ]
+
       logConfiguration  = {
         logDriver       = "awslogs"
         secretOptions   = null
