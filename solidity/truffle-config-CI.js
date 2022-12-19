@@ -96,10 +96,10 @@ module.exports = {
       //   "9102c6da18031b378af9f4883b55b864ccc3acce1fbc9408821e8da0fbd0d4c9", 
       //   "https://goerli.infura.io/v3/d60820df6e2c4a22be8ffd2dc712f66e"
       // ),
-      network_id: parseInt(NETWORK_ID),       // Goerli's id
-      deploymentPollingInterval: 5000,
+      // network_id: parseInt(NETWORK_ID),       // Goerli's id
+      // deploymentPollingInterval: 5000,
       // gas: 5500000,        // Goerli has a lower block limit than mainnet
-      // confirmations: 0,    // # of confs to wait between deployments. (default: 0)
+      confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       // timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets )
       // maxFeePerGas:55000000,

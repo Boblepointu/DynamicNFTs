@@ -471,8 +471,7 @@ jobs:
             run: |
               cd ${{ env.PROJECT_NAME }}/solidity
               yarn
-              yarn global add truffle
-              truffle migrate --reset --config ./truffle-config-CI.js >> truffle_output
+              npx truffle migrate --reset --config ./truffle-config-CI.js >> truffle_output
 
           - name: Upload artifact truffle_output
             if: always()
