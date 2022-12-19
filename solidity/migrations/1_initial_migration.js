@@ -1,3 +1,5 @@
+const Fs = require('fs')
+
 const FacetCutAction = { Add: 0, Replace: 1, Remove: 2 }
 
 const DiamondCutFacet = artifacts.require("DiamondCutFacet")
@@ -23,6 +25,15 @@ const {
   , SALE_START_TIMESTAMP
 } = process.env
 
+const writeToFile = (key, value) => {
+  return new Promise(resolve => {
+    Fs.appendFile('./truffle_output', `${key}=${value}\n`, err => {
+      if(err) console.log(err)
+      resolve()
+    })
+  })
+}
+
 module.exports = async (deployer) => {
   const accounts = await web3.eth.getAccounts()
 
@@ -30,17 +41,25 @@ module.exports = async (deployer) => {
   await deployer.deploy(Weather, LINK_CONTRACT_ADDRESS, ORACLE_CONTRACT_ADDRESS, SERVER_URL, LINK_FEE)
   console.log(`Initted chainlink client with link address ${LINK_CONTRACT_ADDRESS}, oracle address ${ORACLE_CONTRACT_ADDRESS}, and a fixed fee of ${LINK_FEE} `)
 
+  await writeToFile('WEATHER', Weather.address)
+
   console.log(`Deploying DiamondCutFacet`)
   await deployer.deploy(DiamondCutFacet)
   console.log(`DiamondCutFacet deployed: ${DiamondCutFacet.address}`)
+
+  await writeToFile('DIAMONDCUTFACET', DiamondCutFacet.address)
 
   console.log(`Deploying Diamond`)
   await deployer.deploy(Diamond, accounts[0], DiamondCutFacet.address)
   console.log(`Diamond deployed: ${Diamond.address}`)
 
+  await writeToFile('DIAMOND', Diamond.address)
+
   console.log(`Deploying DiamondInit`)
   await deployer.deploy(DiamondInit)
   console.log(`DiamondInit deployed: ${DiamondInit.address}`)
+
+  await writeToFile('DIAMONDINIT', DiamondInit.address)
 
   console.log(`Deploying Facets`)
 
@@ -54,6 +73,8 @@ module.exports = async (deployer) => {
     console.log(`Deploying ${facet.name}`)
     await deployer.deploy(facet.artifact)
     console.log(`${facet.name} deployed: ${facet.artifact.address}`)
+
+    await writeToFile(facet.name.toUpperCase(), facet.artifact.address)
 
     const facetFunctionsSignatures = facet.artifact._json.abi.filter(element => 
       element.signature 
