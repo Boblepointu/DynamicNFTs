@@ -7,7 +7,7 @@ function fail {
 
 n=1
 max=5
-delay=15
+delay=2
 while true; do
 "$@" && break || {
     if [[ $n -lt $max ]]; then
