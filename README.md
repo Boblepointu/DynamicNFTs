@@ -1,7 +1,7 @@
 # DynamicNFTs
 A simple all rounds implementation of dynamic NFTs collection, from infra to front.
 
-# Requirements
+## Requirements
 
 - An AWS account (AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY)
 - A Route53 zone registered in the AWS account (dns_zone_name)
@@ -17,9 +17,27 @@ A simple all rounds implementation of dynamic NFTs collection, from infra to fro
 - The address of a ERC721 contract, that will allow its holders to mint in advance the token of our contract
 - The timestamp to start the sell
 
-# Setting up CI variables
+## How to operate this repo ?
+### Setting up CI variables
 
-To make the CI work, and for it to do all the job, you need to setup repository action secrets.
+To make the CI work, and for it to do all the job, you need to setup repository action secrets and the repository .env file
+
+#### .env file
+
+The list is following :
+
+- PROJECT_NAME=dynamic-nfts
+- CONTRACT_NAME= Can be anything you want
+- CONTRACT_SYMBOL= Can be anything you want
+- WEATHER_CONTRACT_ADDRESS= At first run, set it to 0x00, then, once contracts have been deployed, set it to the actual value found in the truffle_output artifact of the first run.
+- LINK_CONTRACT_ADDRESS= The link token contract address on the chain we operate
+- ORACLE_CONTRACT_ADDRESS= The link oracle contract address on the chain we operate
+- LINK_FEE= The fee needed to operate the oracle, in WEI
+- NETWORK_ID= Define the network id to operate (must be matching what the RPC_URL is sending back)
+- SALE_START_TIMESTAMP= Define a start timestamp for the sale
+- EXCLUSIVE_CONTRACT_ADDRESS= Select the nft contract that make its holders able to mint before anyone else
+- DIAMOND_CONTRACT_ADDRESS= At first run, set it to 0x00, then, once contracts have been deployed, set it to the actual value found in the truffle_output artifact of the first run.
+
 The list is following :
 
 - PROJECT_NAME = whatever you want
@@ -41,7 +59,7 @@ The list is following :
 - DIAMOND_CONTRACT_ADDRESS = At first run, before having deployed your contract, set it to 0x00, then, once contracts have been deployed, set it to the actual address of the weather contract (See artifact truffle_output in CI) and relaunch the CI, having setted the ./contract_deployment_switch file to 0)
 - SALE_START_TIMESTAMP
 
-# Setting up Terraform variables
+### Setting up Terraform variables
 
 Some variables are setted into terraform. You'll find that file @ .deployment/variables.tfvars
 Please define :
@@ -56,7 +74,10 @@ Please define :
 
 And, at last, the S3 bucket that will hold the terraform state files, necessary for it to work, you will find it @ .deployment/variables.tf, at the top of the file. Define here "bucket" (must be created beforehand) and "region" which is the AWS region to operate.
 
-# Improvement possible
+### Launch CI a first time
+
+Once all variables have been set, please launch the CI.
+## Improvement possible
 
 - Develop the code to upgrade the Diamond through the CI
 - Allow multiple IPFS server to run concurrently
