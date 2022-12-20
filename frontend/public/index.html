@@ -128,6 +128,10 @@
                 document.getElementById("error").hidden = true
                 document.getElementById("body").hidden = true
                 try{
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: `0x${NETWORK_ID}`}]
+                    })                    
                     const exclusiveTokenId = document.getElementById("mintExclusiveTokenId").value
                     document.getElementById("error").hidden = true
                     if(exclusiveTokenId === ''){
@@ -160,7 +164,11 @@
                 document.getElementById("spinner").hidden = false
                 document.getElementById("error").hidden = true
                 document.getElementById("body").hidden = true
-                try{                
+                try{
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: `0x${NETWORK_ID}`}]
+                    })
                     const ERC721Contract = new web3.eth.Contract(abi, DIAMOND_CONTRACT_ADDRESS)
                     await ERC721Contract.methods.payableNonExclusiveMint(account).send({ from: account, value: 1000000000000000 })
                     console.log(`Minted a new token in non exclusive mode ! Adding to Metamask wallet !`)
@@ -211,10 +219,12 @@
 
                 document.getElementById("title").innerHTML = `Welcome to the mint ! <br /> You will be able to mint starting of ${moment.unix(SALE_START_TIMESTAMP).format("MM/DD/YYYY HH:mm")}`
 
-                if((new Date()).getTime()/1000 < SALE_START_TIMESTAMP-30)
+                if((new Date()).getTime()/1000 > SALE_START_TIMESTAMP - 30)
+                    document.getElementById("title").innerHTML = `Welcome to the mint ! <br /> You can mint as long as there is some left !`                
+                else{
                     document.getElementById("body").hidden = true
-                else
-                    document.getElementById("title").innerHTML = `Welcome to the mint ! <br /> You can mint as long as there is some left !`
+                    return
+                }
 
                 document.getElementById("titleExclusive").innerHTML = `You own a token in the collection at address : ${EXCLUSIVE_CONTRACT_ADDRESS}`
 
