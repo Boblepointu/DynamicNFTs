@@ -20,7 +20,7 @@
         }
         , "contract": {
             "name": "Weather NFTs",
-            "description": "A collection a NFT moving with the average temperature in Paris !",
+            "description": "A collection of NFT moving with the average temperature in Paris !",
             "image": "contract.png"
           }
     }
