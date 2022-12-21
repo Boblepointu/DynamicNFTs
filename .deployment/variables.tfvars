@@ -18,14 +18,14 @@ lb_dns_record_backend    = "dynamic-nfts-backend.frenchbtc.fr"
 # ECS task definitions. How powerful we want the ECS pods.
 task_definition_configs  = {
   frontend = {
-    memory            = 512
+    memory            = 256
     cpu               = 512
-    soft_memory_limit = 500
+    soft_memory_limit = 250
   }
   backend = {
-    memory            = 512
+    memory            = 256
     cpu               = 512
-    soft_memory_limit = 500
+    soft_memory_limit = 250
   }
   ipfs = {
     memory            = 1024
