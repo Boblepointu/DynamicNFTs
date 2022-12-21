@@ -30,6 +30,6 @@ task_definition_configs  = {
   ipfs = {
     memory            = 1024
     cpu               = 512
-    soft_memory_limit = 4050
+    soft_memory_limit = 1000
   }
 }
