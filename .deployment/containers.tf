@@ -324,18 +324,6 @@ resource "aws_iam_role_policy_attachment" "ecs_backend_tasks_default" {
   policy_arn = aws_iam_policy.backend-secrets.arn
 }
 
-# Chainlink task
-# resource "aws_iam_role" "ecs_chainlink_tasks_execution_role" {
-#   name               = "${var.project_name}-chainlink-${var.environment}"
-#   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
-# }
-
-# resource "aws_iam_role_policy_attachment" "ecs_chainlink_tasks_default" {
-#   role       = aws_iam_role.ecs_chainlink_tasks_execution_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-# }
-
-
 ########################
 #### ECS tasks #########
 ########################

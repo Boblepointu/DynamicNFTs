@@ -94,14 +94,6 @@ const main = async () => {
         avgTemp: avgTempPlus1000
       }))
     })
-    
-    app.get('/contractsData', (req, res) => {
-      res.setHeader('Content-Type', 'application/json')
-      res.end(JSON.stringify({
-        diamonContractAddress: DIAMOND_CONTRACT_ADDRESS
-        , exclusiveContractAddress: EXCLUSIVE_CONTRACT_ADDRESS
-      }))
-    })
 
     app.listen(port, () => {
       console.log(`Backend app listening on port ${port}`)
