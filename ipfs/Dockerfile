@@ -20,6 +20,6 @@ CMD htpasswd -bc /.htpasswd $LOGIN $PASSWORD && \
     ipfs init --profile server || true && \
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]' && \
     ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST"]' && \
-    ipfs config --json Swarm.ConnMgr.HighWater 100 && \
-    ipfs config --json Swarm.ConnMgr.LowWater 50 && \
+    ipfs config --json Swarm.ConnMgr.HighWater 50 && \
+    ipfs config --json Swarm.ConnMgr.LowWater 25 && \
     ipfs daemon
