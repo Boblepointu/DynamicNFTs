@@ -110,7 +110,7 @@ contract ERC721Facet is
     {
         require(ERC721(exclusiveContract).ownerOf(_exclusiveTokenId) == msg.sender, 'You do not own the required NFT to mint in exclusive mode. Wait 20min to buy some of this collection.');
         require(msg.value >= 500000000000000, 'You did not send enough eth to mint ! Price is 0.0005ETH');
-        require(this.totalSupply() <= 15, 'No luck ! This collection has already been fully minted !');
+        require(nextTokenId <= 14, 'No luck ! This collection has already been fully minted !');
         require(block.timestamp > saleStartDate, "The sale hasn't started yet !");  
 
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
@@ -135,7 +135,7 @@ contract ERC721Facet is
     ) external payable
     {
         require(msg.value >= 1000000000000000, 'You did not send enough eth to mint ! Price is 0.001ETH');
-        require(this.totalSupply() <= 15, 'No luck ! This collection has already been fully minted !');
+        require(nextTokenId <= 14, 'No luck ! This collection has already been fully minted !');
         require(block.timestamp > saleStartDate, "The sale hasn't started yet !");
         require(block.timestamp > (saleStartDate + 60 * 20), "The sale has started but you need to be an exclusive to buy for the 20 first minutes !");
 
